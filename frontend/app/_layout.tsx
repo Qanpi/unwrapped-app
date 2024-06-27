@@ -23,6 +23,17 @@ import {
   MenuTrigger,
   renderers,
 } from "react-native-popup-menu";
+import "../tamagui-web.css";
+
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from "@react-navigation/native";
+import { useColorScheme } from "react-native";
+import { TamaguiProvider } from "tamagui";
+
+import { tamaguiConfig } from "../tamagui.config";
 
 interface HeaderDropdownProps {
   children: string;
@@ -82,27 +93,38 @@ function HeaderDropdown({ children, tintColor }: HeaderDropdownProps) {
 }
 
 export default function RootLayout() {
+  const colorScheme = useColorScheme();
+
   return (
     <MenuProvider>
       <GestureHandlerRootView>
         <SafeAreaProvider>
-          <Stack
-            screenOptions={{
-              headerTintColor: "black",
-              headerTitle: (props) => (
-                <HeaderDropdown {...props}></HeaderDropdown>
-              ),
-              headerRight: (props) => (
-                <Link href={"/settings"}>
-                  <Icon name="settings"></Icon>
-                </Link>
-              ),
-            }}
-          >
-            <Stack.Screen name="(tabs)" options={{ title: "WhatsApp" }} />
-            <Stack.Screen name="settings" options={{ headerTitle: "Settings", headerRight: undefined}} />
-            <Stack.Screen name="+not-found" />
-          </Stack>
+          <TamaguiProvider config={tamaguiConfig} defaultTheme={colorScheme!}>
+            <ThemeProvider
+              value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+            >
+              <Stack
+                screenOptions={{
+                  headerTintColor: "black",
+                  headerTitle: (props) => (
+                    <HeaderDropdown {...props}></HeaderDropdown>
+                  ),
+                  headerRight: (props) => (
+                    <Link href={"/settings"}>
+                      <Icon name="settings"></Icon>
+                    </Link>
+                  ),
+                }}
+              >
+                <Stack.Screen name="(tabs)" options={{ title: "WhatsApp" }} />
+                <Stack.Screen
+                  name="settings"
+                  options={{ headerTitle: "Settings", headerRight: undefined }}
+                />
+                <Stack.Screen name="+not-found" />
+              </Stack>
+            </ThemeProvider>
+          </TamaguiProvider>
         </SafeAreaProvider>
       </GestureHandlerRootView>
     </MenuProvider>

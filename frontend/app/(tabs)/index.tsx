@@ -29,11 +29,11 @@ const ChatListItem = ({ title, lastUpdated, messages }: ChatListItemProps) => {
 
 export default function HomeScreen() {
   const chats = [
-    {
-      title: "Tinpot",
-      lastUpdated: new Date(),
-      messages: 1000,
-    },
+    // {
+    //   title: "Tinpot",
+    //   lastUpdated: new Date(),
+    //   messages: 1000,
+    // },
   ];
 
   return (
@@ -56,11 +56,17 @@ export default function HomeScreen() {
         </View>
       </Pressable>
 
-      <ScrollView>
-        {chats.map((chat) => (
-          <ChatListItem {...chat} key={chat.title} />
-        ))}
-      </ScrollView>
+      {chats.length > 0 ? (
+        <ScrollView>
+          {chats.map((chat) => (
+            <ChatListItem {...chat} key={chat.title} />
+          ))}
+        </ScrollView>
+      ) : (
+        <>
+          <Text>Learn how to get started.</Text>
+        </>
+      )}
     </SafeAreaView>
   );
 }
@@ -70,7 +76,7 @@ export const common = StyleSheet.create({
     paddingHorizontal: 35,
     paddingVertical: 30,
     display: "flex",
-    gap: 10
+    gap: 10,
   },
   subtitle: {
     fontWeight: "bold",
