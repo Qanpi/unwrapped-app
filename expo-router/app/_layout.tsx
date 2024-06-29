@@ -70,9 +70,6 @@ function RootLayoutNav() {
 
           <Stack.Screen
             name="chat/[name]"
-            options={{
-              headerRight: (props) => <Share2></Share2>,
-            }}
           />
         </Stack>
       </ThemeProvider>
