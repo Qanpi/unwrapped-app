@@ -1,26 +1,76 @@
 import { Circle, SlidersHorizontal } from "@tamagui/lucide-icons";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { Pressable, TouchableOpacity } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { createContext, ReactNode, useContext } from "react";
 import {
   Button,
   Card,
   H4,
   Paragraph,
   ScrollView,
-  Text,
-  View,
+  useWindowDimensions,
   XStack,
-  YStack,
+  YStack
 } from "tamagui";
+import { useCornerDecorations } from "./Decoration";
 
-function WrappedCard() {
+const WrappedContext = createContext({
+  width: 0,
+  height: 0,
+});
+
+interface BaseCardProps {
+  backgroundColor?: string;
+  children?: ReactNode;
+}
+
+function BaseCard({ backgroundColor, children }: BaseCardProps) {
+  const { width, height } = useContext(WrappedContext);
+
+  const decorations = useCornerDecorations(width, height, 4); 
+
   return (
-    <Card minWidth={400} height="200" backgroundColor="green" mx={50}>
+    <Card width={width} height={height} px="$2">
       <Card.Header>
-        <H4>01 0 10 01 </H4>
+        <H4>01</H4>
       </Card.Header>
+      <Card.Background
+        bg={backgroundColor}
+        alignItems="center"
+        justifyContent="center"
+      >
+        {decorations}
+        {children}
+      </Card.Background>
+      <Card.Footer>
+        <Paragraph>Made with Unwrapped</Paragraph>
+      </Card.Footer>
     </Card>
+  );
+}
+
+function WrappedCardList() {
+  const { width: windowWidth } = useWindowDimensions();
+
+  //FIXME: min max the width and height in case width > height
+  const padding = 30;
+  const width = windowWidth - padding * 2;
+  const height = (width * 1920) / 1080;
+
+  const gap = padding / 2;
+
+  return (
+    <ScrollView horizontal snapToInterval={width + gap} decelerationRate={0.85}>
+      <XStack px={padding} gap={gap}>
+        <WrappedContext.Provider value={{ width, height }}>
+          <BaseCard></BaseCard>
+          <BaseCard></BaseCard>
+          <BaseCard></BaseCard>
+          <BaseCard></BaseCard>
+          <BaseCard></BaseCard>
+          <BaseCard></BaseCard>
+        </WrappedContext.Provider>
+      </XStack>
+    </ScrollView>
   );
 }
 
@@ -32,14 +82,7 @@ function ChatScreen() {
       <Stack.Screen options={{ title: local.name }} />
 
       <YStack flex={1} justifyContent="center" alignItems="center" py="$5">
-        <ScrollView horizontal snapToInterval={500} decelerationRate={0.85}>
-          <WrappedCard></WrappedCard>
-          <WrappedCard></WrappedCard>
-          <WrappedCard></WrappedCard>
-          <WrappedCard></WrappedCard>
-          <WrappedCard></WrappedCard>
-          <WrappedCard></WrappedCard>
-        </ScrollView>
+        <WrappedCardList></WrappedCardList>
 
         <XStack>
           <Button minHeight={"$7"} chromeless flexDirection="column">
