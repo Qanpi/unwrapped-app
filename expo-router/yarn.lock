@@ -4928,6 +4928,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"base64-arraybuffer@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "base64-arraybuffer@npm:1.0.2"
+  checksum: 15e6400d2d028bf18be4ed97702b11418f8f8779fb8c743251c863b726638d52f69571d4cc1843224da7838abef0949c670bde46936663c45ad078e89fee5c62
+  languageName: node
+  linkType: hard
+
 "base64-js@npm:^1.2.3, base64-js@npm:^1.3.1, base64-js@npm:^1.5.1":
   version: 1.5.1
   resolution: "base64-js@npm:1.5.1"
@@ -5670,6 +5677,15 @@ __metadata:
   dependencies:
     hyphenate-style-name: "npm:^1.0.3"
   checksum: bd2f569f1870389004cfacfd7b798c0f40933d34af1f040c391a08322d097790b9a9524affb2ba4d26122e9cb8f4256afb59edb6077dbe607506944a9c673c67
+  languageName: node
+  linkType: hard
+
+"css-line-break@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "css-line-break@npm:2.1.0"
+  dependencies:
+    utrie: "npm:^1.0.2"
+  checksum: e75cae40de511026228d4fa69e8d464895714f8899880b8268a446b57f0faa84b490ba1bdda5ed9e7f38f99ab947c6bc941bb505d8119c49072db079c1cacea5
   languageName: node
   linkType: hard
 
@@ -6598,6 +6614,7 @@ __metadata:
     expo-font: "npm:~12.0.6"
     expo-linking: "npm:~6.3.1"
     expo-router: "npm:~3.5.15"
+    expo-sharing: "npm:~12.0.1"
     expo-splash-screen: "npm:~0.27.4"
     expo-status-bar: "npm:^1.12.1"
     expo-system-ui: "npm:~3.0.4"
@@ -6609,11 +6626,21 @@ __metadata:
     react-native-safe-area-context: "npm:4.10.1"
     react-native-screens: "npm:~3.31.1"
     react-native-svg: "npm:15.2.0"
+    react-native-view-shot: "npm:3.8.0"
     react-native-web: "npm:^0.19.12"
     tamagui: "npm:^1.101.4"
     typescript: "npm:^5.5.2"
   languageName: unknown
   linkType: soft
+
+"expo-sharing@npm:~12.0.1":
+  version: 12.0.1
+  resolution: "expo-sharing@npm:12.0.1"
+  peerDependencies:
+    expo: "*"
+  checksum: 11f90dbef9a0f9defedeeaf9898a1af7cb25a7c30fed3e19d09f32a1ae218bac7c35a4575235b541daf20145e36597bd8286bf60b98a027cbaf8832424bbada4
+  languageName: node
+  linkType: hard
 
 "expo-splash-screen@npm:0.27.4, expo-splash-screen@npm:~0.27.4":
   version: 0.27.4
@@ -7393,6 +7420,16 @@ __metadata:
   dependencies:
     lru-cache: "npm:^6.0.0"
   checksum: fac26fe551d87f271b31e80e5a7519cbb50a3c30ea89cad734da8068930f27288a049258e6ed9c39e20ebec9cf4b67c5cb02055bd73230962ef34db0d45da3e7
+  languageName: node
+  linkType: hard
+
+"html2canvas@npm:^1.4.1":
+  version: 1.4.1
+  resolution: "html2canvas@npm:1.4.1"
+  dependencies:
+    css-line-break: "npm:^2.1.0"
+    text-segmentation: "npm:^1.0.3"
+  checksum: 595790810557a1d4287f07b6ead49aed4f169f08eb00e20c1f030b93344003e84797d28cd8a220e8ec1b78641d460ca6add11b8531960725526f11a7b9fa9900
   languageName: node
   linkType: hard
 
@@ -10258,6 +10295,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-view-shot@npm:3.8.0":
+  version: 3.8.0
+  resolution: "react-native-view-shot@npm:3.8.0"
+  dependencies:
+    html2canvas: "npm:^1.4.1"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: abcde94525a0c25061af404d344e7aff015fb5d839ee8fde50c9e718db6f68f709b17f5e25498412e8b8a386e4094843205d938111f79595d6f9b8eacc0fee46
+  languageName: node
+  linkType: hard
+
 "react-native-web-internals@npm:1.101.4":
   version: 1.101.4
   resolution: "react-native-web-internals@npm:1.101.4"
@@ -11737,6 +11786,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"text-segmentation@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "text-segmentation@npm:1.0.3"
+  dependencies:
+    utrie: "npm:^1.0.2"
+  checksum: 86191de83f09b96f356628c3dbaf6d281eda46a4dd4c94c3827495428871b9dd44ead4ef4cdf06a188b08a3b83e3943c5911841422b55286b121ba9e04c846dd
+  languageName: node
+  linkType: hard
+
 "text-table@npm:^0.2.0":
   version: 0.2.0
   resolution: "text-table@npm:0.2.0"
@@ -12223,6 +12281,15 @@ __metadata:
   version: 1.0.1
   resolution: "utils-merge@npm:1.0.1"
   checksum: 5d6949693d58cb2e636a84f3ee1c6e7b2f9c16cb1d42d0ecb386d8c025c69e327205aa1c69e2868cc06a01e5e20681fbba55a4e0ed0cce913d60334024eae798
+  languageName: node
+  linkType: hard
+
+"utrie@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "utrie@npm:1.0.2"
+  dependencies:
+    base64-arraybuffer: "npm:^1.0.2"
+  checksum: 0c9458380bf3113f425a268e3d605aef163bfbaea62bf24de517b62b6e6744394d8ef1cdd9b07423359aec5ed402baab4bb2c5beec64f674ec635dc2f8dbd4bf
   languageName: node
   linkType: hard
 
