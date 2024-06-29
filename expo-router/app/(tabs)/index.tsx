@@ -1,25 +1,13 @@
-import { ExternalLink, FilePlus } from "@tamagui/lucide-icons";
+import { FilePlus } from "@tamagui/lucide-icons";
+import { router } from "expo-router";
 import {
-  Anchor,
   Button,
-  Card,
-  Circle,
-  H2,
-  H3,
-  H4,
-  H5,
-  H6,
   ListItem,
   Paragraph,
-  Square,
-  useWindowDimensions,
   XStack,
   YGroup,
-  YStack,
+  YStack
 } from "tamagui";
-import { ToastControl } from "app/CurrentToast";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Link, router } from "expo-router";
 
 function ChatListItem({ name, lastUpdated }) {
   return (
