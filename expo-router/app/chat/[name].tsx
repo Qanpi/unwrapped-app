@@ -59,11 +59,11 @@ const BaseCard = forwardRef(function BaseCard(
         {children}
       </Card.Background>
       <Card.Footer>
-        <XStack alignItems="center" justifyContent="center" flex={1}>
+        <XStack alignItems="center" flex={1}>
           <Image
             mb={2}
             ml={2}
-            mr={-2}
+            mr={-3}
             source={{
               uri: require("../../assets/images/logo_96_transparent.png"),
               width: 20,
