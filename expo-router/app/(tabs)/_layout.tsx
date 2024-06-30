@@ -55,7 +55,7 @@ export default function TabLayout() {
       screenOptions={{
         headerTitle: (props) => <HeaderDropdown {...props}></HeaderDropdown>,
         headerRight: () => (
-          <Link href="/settings" asChild>
+          <Link href="/settings">
             <Settings mr="$3"></Settings>
           </Link>
         ),
