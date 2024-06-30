@@ -13,8 +13,10 @@ import {
   Card,
   H1,
   H4,
+  Image,
   Paragraph,
   ScrollView,
+  Text,
   useWindowDimensions,
   XStack,
   YStack,
@@ -32,10 +34,11 @@ const WrappedContext = createContext({
 interface BaseCardProps {
   backgroundColor?: string;
   children?: ReactNode;
+  index: number;
 }
 
 const BaseCard = forwardRef(function BaseCard(
-  { backgroundColor, children }: BaseCardProps,
+  { backgroundColor, children, index }: BaseCardProps,
   ref
 ) {
   const { width, height } = useContext(WrappedContext);
@@ -45,7 +48,7 @@ const BaseCard = forwardRef(function BaseCard(
   return (
     <Card ref={ref} collapsable={false} width={width} height={height} px="$2">
       <Card.Header>
-        <H4>01</H4>
+        <H4>{String(index).padStart(2, "0")}</H4>
       </Card.Header>
       <Card.Background
         bg={backgroundColor}
@@ -56,7 +59,19 @@ const BaseCard = forwardRef(function BaseCard(
         {children}
       </Card.Background>
       <Card.Footer>
-        <Paragraph>Made with Unwrapped</Paragraph>
+        <XStack alignItems="center" justifyContent="center" flex={1}>
+          <Image
+            mb={2}
+            ml={2}
+            mr={-2}
+            source={{
+              uri: require("../../assets/images/logo_96_transparent.png"),
+              width: 20,
+              height: 20,
+            }}
+          ></Image>
+          <Paragraph fontSize={10}>nwrapped</Paragraph>
+        </XStack>
       </Card.Footer>
     </Card>
   );
@@ -141,7 +156,7 @@ function WrappedCardList() {
       <Stack.Screen
         options={{
           title: local.name,
-          headerRight: (props) => <Share2 onPress={handlePressShare}></Share2>, //FIXME: hit slop and touchable opacity for web cursor 
+          headerRight: (props) => <Share2 onPress={handlePressShare}></Share2>, //FIXME: hit slop and touchable opacity for web cursor
         }}
       />
 
@@ -153,7 +168,11 @@ function WrappedCardList() {
         <XStack px={padding} gap={gap}>
           <WrappedContext.Provider value={{ width, height }}>
             {cardPresets.map((cardChildren, index) => (
-              <BaseCard key={index} ref={(el) => assignCardRef(el, index)}>
+              <BaseCard
+                key={index}
+                ref={(el) => assignCardRef(el, index)}
+                index={index + 1}
+              >
                 {cardChildren}
               </BaseCard>
             ))}
