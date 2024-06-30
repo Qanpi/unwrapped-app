@@ -11,6 +11,7 @@ import ViewShot, { captureRef } from "react-native-view-shot";
 import {
   Button,
   Card,
+  H1,
   H4,
   Paragraph,
   ScrollView,
@@ -20,7 +21,8 @@ import {
 } from "tamagui";
 import { useCornerDecorations } from "./Decoration";
 
-import { Text as RNText, View as RNView } from "react-native";
+import * as Sharing from "expo-sharing";
+import Share from "react-native-share";
 
 const WrappedContext = createContext({
   width: 0,
@@ -62,12 +64,23 @@ const BaseCard = forwardRef(function BaseCard(
 
 function WrappedCardList() {
   const local = useLocalSearchParams();
-  const { width: windowWidth } = useWindowDimensions();
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
 
-  //FIXME: min max the width and height in case width > height
   const padding = 30;
-  const width = windowWidth - padding * 2;
-  const height = (width * 1920) / 1080;
+  const { width, height } = ((w, h) => {
+    if (w > h) {
+      return {
+        width: (h * 1080) / 1920 - padding * 2,
+        height: h,
+      };
+    } else {
+      return {
+        width: w - padding * 2,
+        height: ((w - padding * 2) * 1920) / 1080,
+      };
+    }
+  })(windowWidth, windowHeight);
+
   const gap = padding / 2;
 
   const cardRefs = useRef([]);
@@ -77,24 +90,58 @@ function WrappedCardList() {
     }
   };
 
-  const handlePressShare = () => {
+  const handlePressShare = async () => {
     //FIXME: handleError gracefully
-    const handleCapture = (uri) => {
-      console.log(uri)
+    const shareCapturedFiles = async (uris: string[]) => {
+      const response = await Share.open({
+        title: "title",
+        message: "message", //TODO:
+
+        type: "image/*",
+        urls: uris,
+      });
+
+      // if (await Sharing.isAvailableAsync()) {
+      //   await Sharing.shareAsync("file://" + uri, {
+      //     dialogTitle: "Share your Wrapped",
+      //     mimeType: "image/jpg",
+      //     UTI: ".jpg"
+      //   });
+      // } else {
+      //   //FIXME: show a toast
+      //   alert("Sharing is not available on this platform");
+      // }
+    };
+
+    const urls: string[] = [];
+
+    for (const card of cardRefs.current) {
+      try {
+        const uri = await captureRef(card, {
+          format: "jpg",
+          quality: 0.8,
+        });
+
+        urls.push("file://" + uri);
+      } catch (e) {
+        //FIXME: handle gracefully
+        console.error(e);
+      }
     }
 
-    captureRef(cardRefs.current[0], {
-      format: "jpg",
-      quality: 0.8,
-    }).then(handleCapture, (err) => console.error(err));
+    shareCapturedFiles(urls);
   };
+
+  const cardPresets = Array.from({ length: 8 }, (v, i) => (
+    <H4>{"Title" + i}</H4>
+  ));
 
   return (
     <>
       <Stack.Screen
         options={{
           title: local.name,
-          headerRight: (props) => <Share2 onPress={handlePressShare}></Share2>,
+          headerRight: (props) => <Share2 onPress={handlePressShare}></Share2>, //FIXME: hit slop and touchable opacity for web cursor 
         }}
       />
 
@@ -105,12 +152,11 @@ function WrappedCardList() {
       >
         <XStack px={padding} gap={gap}>
           <WrappedContext.Provider value={{ width, height }}>
-            <BaseCard ref={(el) => assignCardRef(el, 0)}></BaseCard>
-            <BaseCard></BaseCard>
-            <BaseCard></BaseCard>
-            <BaseCard></BaseCard>
-            <BaseCard></BaseCard>
-            <BaseCard></BaseCard>
+            {cardPresets.map((cardChildren, index) => (
+              <BaseCard key={index} ref={(el) => assignCardRef(el, index)}>
+                {cardChildren}
+              </BaseCard>
+            ))}
           </WrappedContext.Provider>
         </XStack>
       </ScrollView>
