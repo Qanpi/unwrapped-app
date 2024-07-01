@@ -12,6 +12,7 @@ import {
   Button,
   Card,
   H1,
+  H2,
   H4,
   Image,
   Paragraph,
@@ -60,7 +61,7 @@ const BaseCard = forwardRef(function BaseCard(
       </Card.Background>
       <Card.Footer>
         <XStack alignItems="center" flex={1}>
-          <Image
+          {/* <Image
             mb={2}
             ml={2}
             mr={-3}
@@ -69,8 +70,8 @@ const BaseCard = forwardRef(function BaseCard(
               width: 20,
               height: 20,
             }}
-          ></Image>
-          <Paragraph fontSize={10}>nwrapped</Paragraph>
+          ></Image> */}
+          <Paragraph fontSize={10}>Unwrapped</Paragraph>
         </XStack>
       </Card.Footer>
     </Card>
@@ -147,9 +148,12 @@ function WrappedCardList() {
     shareCapturedFiles(urls);
   };
 
-  const cardPresets = Array.from({ length: 8 }, (v, i) => (
-    <H4>{"Title" + i}</H4>
-  ));
+  const cardPresets = [
+    <>
+      <H2>Chat Title</H2>
+      <Paragraph>date - date</Paragraph>
+    </>,
+  ];
 
   return (
     <>
