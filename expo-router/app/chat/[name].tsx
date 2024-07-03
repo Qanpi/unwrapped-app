@@ -1,31 +1,43 @@
 import { Circle, Share2, SlidersHorizontal } from "@tamagui/lucide-icons";
+import * as FileSystem from "expo-file-system";
 import { Stack, useLocalSearchParams } from "expo-router";
 import {
   createContext,
   forwardRef,
   ReactNode,
   useContext,
+  useEffect,
   useRef,
+  useState,
 } from "react";
-import ViewShot, { captureRef } from "react-native-view-shot";
+import { captureRef } from "react-native-view-shot";
 import {
   Button,
   Card,
-  H1,
   H2,
   H4,
-  Image,
   Paragraph,
   ScrollView,
+  Square,
+  styled,
   Text,
   useWindowDimensions,
+  View,
   XStack,
   YStack,
 } from "tamagui";
 import { useCornerDecorations } from "./Decoration";
 
-import * as Sharing from "expo-sharing";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Share from "react-native-share";
+
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import localizedFormat from "dayjs/plugin/localizedFormat";
+import { tokens } from "@tamagui/config/v3";
+
+dayjs.extend(localizedFormat);
+dayjs.extend(customParseFormat);
 
 const WrappedContext = createContext({
   width: 0,
@@ -55,22 +67,14 @@ const BaseCard = forwardRef(function BaseCard(
         bg={backgroundColor}
         alignItems="center"
         justifyContent="center"
+        gap="$2"
+        p="$3"
       >
         {decorations}
         {children}
       </Card.Background>
       <Card.Footer>
         <XStack alignItems="center" flex={1}>
-          {/* <Image
-            mb={2}
-            ml={2}
-            mr={-3}
-            source={{
-              uri: require("../../assets/images/logo_96_transparent.png"),
-              width: 20,
-              height: 20,
-            }}
-          ></Image> */}
           <Paragraph fontSize={10}>Unwrapped</Paragraph>
         </XStack>
       </Card.Footer>
@@ -80,6 +84,59 @@ const BaseCard = forwardRef(function BaseCard(
 
 function WrappedCardList() {
   const local = useLocalSearchParams();
+  const chatKey = local.name as string;
+
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    if (!local.name) return; //FIXME: 404 page
+
+    const dateReviver = (key, value) => {
+      const date = dayjs(value, "YYYY-MM-DDTHH:mm:ss", true);
+
+      if (date.isValid()) {
+        return date;
+      }
+
+      return value;
+    };
+
+    const initializeChat = async () => {
+      const chatRaw = await AsyncStorage.getItem(chatKey as string);
+      const chat = JSON.parse(chatRaw, dateReviver);
+
+      // if previous analyzer, exit now
+      //FIXME: date based way to determine when analyzed?
+      if ("lastAnalyzed" in chat) {
+        return setData(chat);
+      }
+
+      const SERVER_URL = "http://192.168.10.163:7071";
+
+      const res = await FileSystem.uploadAsync(
+        `${SERVER_URL}/api/analyze`,
+        chat.uri,
+        {
+          fieldName: "chat",
+          httpMethod: "POST",
+          uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+        }
+      );
+
+      if (res.status !== 200) {
+        console.log("status error");
+        return; //FIXME: throw error
+      }
+
+      const parsed = JSON.parse(res.body, dateReviver);
+      setData(parsed);
+
+      await AsyncStorage.setItem(chatKey, res.body);
+    };
+
+    initializeChat().catch(console.error); //FIXME: handle error
+  }, [local.name]);
+
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
 
   const padding = 30;
@@ -148,18 +205,72 @@ function WrappedCardList() {
     shareCapturedFiles(urls);
   };
 
-  const cardPresets = [
-    <>
-      <H2>Chat Title</H2>
-      <Paragraph>date - date</Paragraph>
-    </>,
-  ];
+  const loading = !data;
+
+  const chatName = chatKey.replace(/\..+$/, "");
+
+  const getCardPresets = () => {
+    if (loading) return [];
+
+    const WH2 = styled(H2, {
+      textAlign: "center",
+    });
+
+    const { timespan, total, messagesPerPerson } = data;
+    return [
+      <>
+        <WH2>{chatName}</WH2>
+        <Paragraph>{`${timespan.from.format("L")} - ${timespan.to.format(
+          "L"
+        )}`}</Paragraph>
+      </>,
+      <>
+        <WH2>These {timespan.days} days have been fruitful.</WH2>
+        <Paragraph>
+          In total, you exchanged {total.messages} messages.
+        </Paragraph>
+      </>,
+      <>
+        <YStack alignSelf="stretch" p="$5">
+          <H4 mb="$4">Messages sent per person</H4>
+          {messagesPerPerson.map((p) => {
+            const [name, count, factor] = p;
+            const percentage = (factor * 100).toFixed(0) + "%";
+
+            return (
+              <XStack justifyContent="space-between" alignItems="center">
+                <Paragraph>{name}</Paragraph>
+                <XStack alignItems="center" gap="$2" width={percentage}>
+                  <Paragraph fontSize={11}>{percentage}</Paragraph>
+                  <Square
+                    height={12}
+                    flex={1}
+                    backgroundColor="red"
+                    borderRadius="$1"
+                  ></Square>
+                </XStack>
+              </XStack>
+            );
+          })}
+        </YStack>
+      </>,
+      <>
+        <H4>Messages types pie chart</H4>
+      </>,
+      <>
+        <WH2>
+          Out of {new Intl.NumberFormat().format(total.words)} words, your most
+          popular were...
+        </WH2>
+      </>,
+    ];
+  };
 
   return (
     <>
       <Stack.Screen
         options={{
-          title: local.name,
+          title: !loading ? chatKey : "Loading...",
           headerRight: (props) => <Share2 onPress={handlePressShare}></Share2>, //FIXME: hit slop and touchable opacity for web cursor
         }}
       />
@@ -171,7 +282,7 @@ function WrappedCardList() {
       >
         <XStack px={padding} gap={gap}>
           <WrappedContext.Provider value={{ width, height }}>
-            {cardPresets.map((cardChildren, index) => (
+            {getCardPresets().map((cardChildren, index) => (
               <BaseCard
                 key={index}
                 ref={(el) => assignCardRef(el, index)}

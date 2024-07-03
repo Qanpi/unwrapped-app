@@ -23,7 +23,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.qanpi.unwrapped"
+      "package": "com.qanpi.unwrapped-2"
     },
     "web": {
       "bundler": "metro",
@@ -33,7 +33,8 @@
     "plugins": [
       "expo-router",
       "expo-font",
-      "expo-asset"
+      "expo-asset",
+      "expo-document-picker"
     ],
     "experiments": {
       "typedRoutes": true
