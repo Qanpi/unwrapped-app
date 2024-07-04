@@ -6347,6 +6347,13 @@ rimraf@~2.6.2:
   dependencies:
     glob "^7.1.3"
 
+rn-wordcloud@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.npmjs.org/rn-wordcloud/-/rn-wordcloud-1.0.3.tgz"
+  integrity sha512-lOxrJqoJgFW58h5Ibpt98SvweZzHSd0GNVVIVNEbkOz0unnvXtDGtsyXZ3YkU2V75fhEwWspt0NUfSaz/e+7OQ==
+  dependencies:
+    prop-types "^15.8.1"
+
 run-parallel@^1.1.9:
   version "1.2.0"
   dependencies:
