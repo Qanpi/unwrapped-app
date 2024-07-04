@@ -1,4 +1,5 @@
 import { Circle, Share2, SlidersHorizontal } from "@tamagui/lucide-icons";
+import WordCloud from "rn-wordcloud";
 import * as FileSystem from "expo-file-system";
 import { Stack, useLocalSearchParams } from "expo-router";
 import {
@@ -14,8 +15,10 @@ import { captureRef } from "react-native-view-shot";
 import {
   Button,
   Card,
+  H1,
   H2,
   H4,
+  Image,
   Paragraph,
   ScrollView,
   Square,
@@ -74,8 +77,15 @@ const BaseCard = forwardRef(function BaseCard(
         {children}
       </Card.Background>
       <Card.Footer>
-        <XStack alignItems="center" flex={1}>
-          <Paragraph fontSize={10}>Unwrapped</Paragraph>
+        <XStack alignItems="center" flex={1} gap="$1">
+          <Image
+            source={{
+              uri: require("./../../assets/images/logo_96.png"),
+              width: 12,
+              height: 12,
+            }}
+          ></Image>
+          <Paragraph fontSize={11}>Unwrapped</Paragraph>
         </XStack>
       </Card.Footer>
     </Card>
@@ -238,7 +248,7 @@ function WrappedCardList() {
             const percentage = (factor * 100).toFixed(0) + "%";
 
             return (
-              <XStack justifyContent="space-between" alignItems="center">
+              <XStack key={name} justifyContent="space-between" alignItems="center">
                 <Paragraph>{name}</Paragraph>
                 <XStack alignItems="center" gap="$2" width={percentage}>
                   <Paragraph fontSize={11}>{percentage}</Paragraph>
@@ -262,6 +272,60 @@ function WrappedCardList() {
           Out of {new Intl.NumberFormat().format(total.words)} words, your most
           popular were...
         </WH2>
+      </>,
+      <>
+        <WordCloud
+          options={{
+            words: data.mostPopularWords.slice(0, 40).map(([word, count]) => {
+              return { text: word, value: count }; //TODO: colors
+            }),
+            verticalEnabled: true,
+            minFont: 10,
+            maxFont: 50,
+            fontOffset: 10,
+            margin: 2,
+            width,
+            height,
+            fontFamily: "Arial", //TODO: update this
+          }}
+        ></WordCloud>
+      </>,
+      <WH2>And your most popular emojis...</WH2>,
+      <WordCloud
+        options={{
+          words: data.mostPopularEmojis.slice(0, 50).map(([word, count]) => {
+            return { text: word, value: count }; //TODO: colors
+          }),
+          minFont: 15,
+          maxFont: 50,
+          margin: 5,
+          fontOffset: 10,
+          width,
+          height,
+          fontFamily: "Arial", //TODO: update this
+        }}
+      ></WordCloud>,
+      <>
+        <WH2>The messages were coming in non-stop.</WH2>
+        <Paragraph>{data.longestDayRange}</Paragraph>
+      </>,
+      <>
+        <Paragraph>heatmap</Paragraph>
+      </>,
+      <WH2>Meanwhile, your longest streak spanned...</WH2>,
+      <>
+        <View position="relative" background={"yellow"}>
+          <Image
+            source={{
+              uri: require("./../../assets/images/fire-streak.png"),
+              width: 150,
+              height: 200,
+            }}
+            position="absolute"
+          ></Image>
+          <H1 mb="$-3">{data.longestStreak.streak}</H1>
+          <Paragraph>days</Paragraph>
+        </View>
       </>,
     ];
   };
