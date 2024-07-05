@@ -1,4 +1,5 @@
 import { Circle, Share2, SlidersHorizontal } from "@tamagui/lucide-icons";
+// import {GiftedChat} from "react-native-gifted-chat";
 import WordCloud from "rn-wordcloud";
 import * as FileSystem from "expo-file-system";
 import { Stack, useLocalSearchParams } from "expo-router";
@@ -17,13 +18,17 @@ import {
   Card,
   H1,
   H2,
+  H3,
   H4,
+  H6,
   Image,
   Paragraph,
   ScrollView,
+  Spacer,
   Square,
   styled,
   Text,
+  Tooltip,
   useWindowDimensions,
   View,
   XStack,
@@ -91,6 +96,78 @@ const BaseCard = forwardRef(function BaseCard(
     </Card>
   );
 });
+
+interface PersonalStats {
+  mostPopularWord: { word: string; count: number };
+  emoji: string;
+  MBTI: string;
+  iq: number;
+  convosEnded: number;
+  convosStarted: number;
+  averageResponseTime: number;
+  screenTime: number;
+}
+
+const PersonalStats = ({
+  name,
+  stats,
+}: {
+  name: string;
+  stats: PersonalStats;
+}) => {
+  function formatTime(seconds) {
+    // Hours, minutes and seconds
+    const hrs = ~~(seconds / 3600);
+    const mins = ~~((seconds % 3600) / 60);
+    const secs = ~~seconds % 60;
+
+    // Output like "1:01" or "4:03:59" or "123:03:59"
+
+    if (hrs > 0) {
+      return `${hrs}h ${mins}min`;
+    }
+
+    return `${mins}min ${secs}sec`;
+  }
+
+  const StatRow = ({ title, stat }) => {
+    return (
+      <XStack justifyContent="space-between">
+        <Paragraph>{title} </Paragraph>
+        <Paragraph>{stat}</Paragraph>
+      </XStack>
+    );
+  };
+
+  return (
+    <>
+      <H1 fontSize={100} lineHeight={150} mb="$-4" mt="$-10">
+        {stats.emoji}
+      </H1>
+      <H6 mb="$-3">{name}</H6>
+      <Paragraph fontSize={10}>
+        said '{stats.mostPopularWord.word}' {stats.mostPopularWord.count} times
+      </Paragraph>
+      <Spacer></Spacer>
+      <YStack width="80%">
+        <StatRow title="Personality type:" stat={"TODO"}></StatRow>
+        <StatRow title="IQ:" stat={stats.iq.toFixed(1)}></StatRow>
+        <Tooltip></Tooltip>
+        <Spacer></Spacer>
+        <StatRow title="Convos started:" stat={stats.convosStarted}></StatRow>
+        <StatRow title="Convos ended:" stat={stats.convosEnded}></StatRow>
+        <StatRow
+          title="Response time:"
+          stat={"~" + formatTime(stats.averageResponseTime)}
+        ></StatRow>
+        <StatRow
+          title="Screen time:"
+          stat={"~" + formatTime(stats.screenTime)}
+        ></StatRow>
+      </YStack>
+    </>
+  );
+};
 
 function WrappedCardList() {
   const local = useLocalSearchParams();
@@ -226,6 +303,16 @@ function WrappedCardList() {
       textAlign: "center",
     });
 
+    const WH3 = styled(H3, {
+      textAlign: "center",
+    });
+
+    const BigNumber = styled(H1, {
+      fontSize: 100,
+      lineHeight: 100,
+      mb: "$-5",
+    });
+
     const { timespan, total, messagesPerPerson } = data;
     return [
       <>
@@ -237,18 +324,23 @@ function WrappedCardList() {
       <>
         <WH2>These {timespan.days} days have been fruitful.</WH2>
         <Paragraph>
-          In total, you exchanged {total.messages} messages.
+          In total, you exchanged{" "}
+          <Paragraph color="red">{total.messages}</Paragraph> messages.
         </Paragraph>
       </>,
       <>
         <YStack alignSelf="stretch" p="$5">
-          <H4 mb="$4">Messages sent per person</H4>
+          <H4 mb="$4">Messages per person</H4>
           {messagesPerPerson.map((p) => {
             const [name, count, factor] = p;
             const percentage = (factor * 100).toFixed(0) + "%";
 
             return (
-              <XStack key={name} justifyContent="space-between" alignItems="center">
+              <XStack
+                key={name}
+                justifyContent="space-between"
+                alignItems="center"
+              >
                 <Paragraph>{name}</Paragraph>
                 <XStack alignItems="center" gap="$2" width={percentage}>
                   <Paragraph fontSize={11}>{percentage}</Paragraph>
@@ -293,40 +385,100 @@ function WrappedCardList() {
       <WH2>And your most popular emojis...</WH2>,
       <WordCloud
         options={{
-          words: data.mostPopularEmojis.slice(0, 50).map(([word, count]) => {
+          words: data.mostPopularEmojis.slice(0, 25).map(([word, count]) => {
             return { text: word, value: count }; //TODO: colors
           }),
-          minFont: 15,
-          maxFont: 50,
-          margin: 5,
-          fontOffset: 10,
+          minFont: 25, //TODO: proportioanlize to count
+          maxFont: 70,
+          margin: 7, //FIXME: patch npm lib
+          fontOffset: 5,
           width,
           height,
           fontFamily: "Arial", //TODO: update this
         }}
       ></WordCloud>,
-      <>
-        <WH2>The messages were coming in non-stop.</WH2>
-        <Paragraph>{data.longestDayRange}</Paragraph>
-      </>,
-      <>
-        <Paragraph>heatmap</Paragraph>
-      </>,
+      // <>
+      //   <WH2>The messages kept coming in non-stop.</WH2>
+      //   <Paragraph>{data.longestDayRange}</Paragraph>
+      // </>,
+      // <Paragraph>heatmap</Paragraph>,
       <WH2>Meanwhile, your longest streak spanned...</WH2>,
       <>
-        <View position="relative" background={"yellow"}>
+        <View
+          alignItems="center"
+          justifyContent="flex-end"
+          width={200}
+          height={270}
+        >
           <Image
             source={{
               uri: require("./../../assets/images/fire-streak.png"),
-              width: 150,
-              height: 200,
+              width: "100%",
+              height: "100%",
             }}
             position="absolute"
           ></Image>
-          <H1 mb="$-3">{data.longestStreak.streak}</H1>
-          <Paragraph>days</Paragraph>
+
+          <BigNumber>{data.longestStreak.streak}</BigNumber>
+          <Paragraph mb="$2">days</Paragraph>
         </View>
+        <Paragraph>{`${dayjs(data.longestStreak.from).format("L")} - ${dayjs(
+          data.longestStreak.to
+        ).format("L")}`}</Paragraph>
       </>,
+
+      <WH2>
+        While the longest you went <WH2 fontStyle="italic">without</WH2> talking
+        was...
+      </WH2>,
+      <>
+        <View
+          alignItems="center"
+          justifyContent="flex-end"
+          width={290}
+          height={270}
+        >
+          <Image
+            source={{
+              uri: require("./../../assets/images/poop-streak.png"),
+              width: "100%",
+              height: "100%",
+            }}
+            top={10}
+            position="absolute"
+          ></Image>
+          <BigNumber>{data.longestSilence.silence}</BigNumber>
+          <Paragraph mb="$3">days</Paragraph>
+        </View>
+        <Paragraph>{`${dayjs(data.longestSilence.from).format("L")} - ${dayjs(
+          data.longestSilence.to
+        ).format("L")}`}</Paragraph>
+      </>,
+      <WH2>Now let's look at some individual statistics 👀</WH2>,
+      ...Object.entries(data.personal).map(([name, stats]) => {
+        return <PersonalStats name={name} stats={stats}></PersonalStats>;
+      }),
+      // <WH3>Over the years, your chat underwent some changes<WH3>,
+      <>
+        <WH2>How it started</WH2>
+        {/* <GiftedChat
+          messages={[
+            {
+              _id: 1,
+              text: "Hello developer",
+              createdAt: new Date(),
+              user: {
+                _id: 2,
+                name: "React Native",
+              },
+            },
+          ]}
+          user={{
+            _id: 1,
+          }}
+        ></GiftedChat> */}
+      </>,
+      <WH2>How it's going</WH2>,
     ];
   };
 
