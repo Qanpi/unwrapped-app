@@ -23,7 +23,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.qanpi.unwrapped-2"
+      "package": "com.qanpi.unwrapped"
     },
     "web": {
       "bundler": "metro",
