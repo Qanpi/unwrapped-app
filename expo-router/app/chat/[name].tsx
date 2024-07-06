@@ -1,5 +1,6 @@
 import { Circle, Share2, SlidersHorizontal } from "@tamagui/lucide-icons";
-// import {GiftedChat} from "react-native-gifted-chat";
+import { BlurView } from "expo-blur";
+import { GiftedChat } from "react-native-gifted-chat";
 import WordCloud from "rn-wordcloud";
 import * as FileSystem from "expo-file-system";
 import { Stack, useLocalSearchParams } from "expo-router";
@@ -134,7 +135,27 @@ const PersonalStats = ({
     return (
       <XStack justifyContent="space-between">
         <Paragraph>{title} </Paragraph>
-        <Paragraph>{stat}</Paragraph>
+
+        <Paragraph
+          style={{
+            // height: 3,
+            // width: 70,
+            color: "#fff0",
+
+            shadowOpacity: 1,
+            shadowColor: "#000",
+            shadowRadius: 15,
+
+            textShadowColor: "rgba(255,255,255,0.5)",
+            textShadowOffset: {
+              width: 0,
+              height: 0,
+            },
+            textShadowRadius: 15,
+          }}
+        >
+          {stat}
+        </Paragraph>
       </XStack>
     );
   };
@@ -190,7 +211,7 @@ function WrappedCardList() {
 
     const initializeChat = async () => {
       const chatRaw = await AsyncStorage.getItem(chatKey as string);
-      const chat = JSON.parse(chatRaw, dateReviver);
+      const chat = JSON.parse(chatRaw);
 
       // if previous analyzer, exit now
       //FIXME: date based way to determine when analyzed?
@@ -215,7 +236,7 @@ function WrappedCardList() {
         return; //FIXME: throw error
       }
 
-      const parsed = JSON.parse(res.body, dateReviver);
+      const parsed = JSON.parse(res.body);
       setData(parsed);
 
       await AsyncStorage.setItem(chatKey, res.body);
@@ -316,10 +337,10 @@ function WrappedCardList() {
     const { timespan, total, messagesPerPerson } = data;
     return [
       <>
-        <WH2>{chatName}</WH2>
-        <Paragraph>{`${timespan.from.format("L")} - ${timespan.to.format(
-          "L"
-        )}`}</Paragraph>
+        <WH2 mb="$-2">{chatName}</WH2>
+        <Paragraph>{`${dayjs(timespan.from).format("L")} - ${dayjs(
+          timespan.to
+        ).format("L")}`}</Paragraph>
       </>,
       <>
         <WH2>These {timespan.days} days have been fruitful.</WH2>
@@ -422,9 +443,9 @@ function WrappedCardList() {
           <BigNumber>{data.longestStreak.streak}</BigNumber>
           <Paragraph mb="$2">days</Paragraph>
         </View>
-        <Paragraph>{`${dayjs(data.longestStreak.from).format("L")} - ${dayjs(
+        <Paragraph>{`${dayjs(data.longestStreak.from).format("ll")} - ${dayjs(
           data.longestStreak.to
-        ).format("L")}`}</Paragraph>
+        ).format("ll")}`}</Paragraph>
       </>,
 
       <WH2>
@@ -450,9 +471,9 @@ function WrappedCardList() {
           <BigNumber>{data.longestSilence.silence}</BigNumber>
           <Paragraph mb="$3">days</Paragraph>
         </View>
-        <Paragraph>{`${dayjs(data.longestSilence.from).format("L")} - ${dayjs(
+        <Paragraph>{`${dayjs(data.longestSilence.from).format("ll")} - ${dayjs(
           data.longestSilence.to
-        ).format("L")}`}</Paragraph>
+        ).format("ll")}`}</Paragraph>
       </>,
       <WH2>Now let's look at some individual statistics 👀</WH2>,
       ...Object.entries(data.personal).map(([name, stats]) => {
@@ -461,25 +482,50 @@ function WrappedCardList() {
       // <WH3>Over the years, your chat underwent some changes<WH3>,
       <>
         <WH2>How it started</WH2>
-        {/* <GiftedChat
-          messages={[
-            {
-              _id: 1,
-              text: "Hello developer",
-              createdAt: new Date(),
-              user: {
-                _id: 2,
-                name: "React Native",
-              },
-            },
-          ]}
-          user={{
-            _id: 1,
-          }}
-        ></GiftedChat> */}
+        <View width={300} height={400} backgroundColor="yellow">
+          <WrappedChat
+            messages={data.first10Messages.slice(0, 5)}
+          ></WrappedChat>
+        </View>
       </>,
-      <WH2>How it's going</WH2>,
+      <>
+        <WH2>How it's going</WH2>
+        <View width={300} height={400} backgroundColor="yellow">
+          <WrappedChat messages={data.last10Messages.slice(0, 5)}></WrappedChat>
+        </View>
+      </>,
+      <>
+        <WH2 mb="$-3">{chatName}</WH2>
+        <Paragraph>wrapped.</Paragraph>
+        <Spacer></Spacer>
+        <YStack>
+          <Paragraph>Get on google pay</Paragraph>
+          <Paragraph>Get on ios</Paragraph>
+        </YStack>
+      </>,
     ];
+  };
+
+  const WrappedChat = ({ messages }) => {
+    return (
+      <GiftedChat
+        renderInputToolbar={() => null}
+        messages={messages.map(([date, author, text]) => {
+          return {
+            _id: 1,
+            createdAt: dayjs(date).toDate(),
+            user: {
+              _id: author,
+              name: author,
+            },
+            text: text,
+          };
+        })}
+        user={{
+          _id: 1,
+        }}
+      ></GiftedChat>
+    );
   };
 
   return (
