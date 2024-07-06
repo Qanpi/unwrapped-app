@@ -1,4 +1,9 @@
-import { Circle, Share2, SlidersHorizontal } from "@tamagui/lucide-icons";
+import {
+  Circle,
+  HelpCircle,
+  Share2,
+  SlidersHorizontal,
+} from "@tamagui/lucide-icons";
 import { BlurView } from "expo-blur";
 import { GiftedChat } from "react-native-gifted-chat";
 import WordCloud from "rn-wordcloud";
@@ -15,6 +20,7 @@ import {
 } from "react";
 import { captureRef } from "react-native-view-shot";
 import {
+  Adapt,
   Button,
   Card,
   H1,
@@ -23,13 +29,17 @@ import {
   H4,
   H6,
   Image,
+  Input,
+  Label,
   Paragraph,
+  Popover,
   ScrollView,
   Spacer,
   Square,
   styled,
   Text,
   Tooltip,
+  TooltipGroup,
   useWindowDimensions,
   View,
   XStack,
@@ -78,6 +88,9 @@ const BaseCard = forwardRef(function BaseCard(
         justifyContent="center"
         gap="$2"
         p="$3"
+        //allow press events
+        pointerEvents="auto"
+        zIndex={100}
       >
         {decorations}
         {children}
@@ -138,8 +151,6 @@ const PersonalStats = ({
 
         <Paragraph
           style={{
-            // height: 3,
-            // width: 70,
             color: "#fff0",
 
             shadowOpacity: 1,
@@ -160,6 +171,56 @@ const PersonalStats = ({
     );
   };
 
+  const InfoTooltip = () => {
+    return (
+      <Popover size="$5">
+        <Popover.Trigger alignSelf="flex-end" asChild>
+          <Button chromeless icon={HelpCircle} fontSize={10} p={0} opacity={0.5}>
+            How are these calculated? 
+          </Button>
+        </Popover.Trigger>
+
+        <Adapt when="sm" platform="touch">
+          <Popover.Sheet modal dismissOnSnapToBottom>
+            <Popover.Sheet.Frame padding="$4">
+              <Adapt.Contents />
+            </Popover.Sheet.Frame>
+            <Popover.Sheet.Overlay
+              animation="lazy"
+              enterStyle={{ opacity: 0 }}
+              exitStyle={{ opacity: 0 }}
+            />
+          </Popover.Sheet>
+        </Adapt>
+
+        <Popover.Content
+          borderWidth={1}
+          borderColor="$borderColor"
+          enterStyle={{ y: -10, opacity: 0 }}
+          exitStyle={{ y: -10, opacity: 0 }}
+          elevate
+          animation={[
+            "quick",
+            {
+              opacity: {
+                overshootClamping: true,
+              },
+            },
+          ]}
+        >
+          <Popover.Arrow borderWidth={1} borderColor="$borderColor" />
+
+          <YStack space="$3">
+            <XStack space="$3">
+              <Label size="$3">Name</Label>
+              <Input size="$3" />
+            </XStack>
+          </YStack>
+        </Popover.Content>
+      </Popover>
+    );
+  };
+
   return (
     <>
       <H1 fontSize={100} lineHeight={150} mb="$-4" mt="$-10">
@@ -173,7 +234,7 @@ const PersonalStats = ({
       <YStack width="80%">
         <StatRow title="Personality type:" stat={"TODO"}></StatRow>
         <StatRow title="IQ:" stat={stats.iq.toFixed(1)}></StatRow>
-        <Tooltip></Tooltip>
+
         <Spacer></Spacer>
         <StatRow title="Convos started:" stat={stats.convosStarted}></StatRow>
         <StatRow title="Convos ended:" stat={stats.convosEnded}></StatRow>
@@ -185,6 +246,7 @@ const PersonalStats = ({
           title="Screen time:"
           stat={"~" + formatTime(stats.screenTime)}
         ></StatRow>
+        <InfoTooltip></InfoTooltip>
       </YStack>
     </>
   );
@@ -477,7 +539,9 @@ function WrappedCardList() {
       </>,
       <WH2>Now let's look at some individual statistics 👀</WH2>,
       ...Object.entries(data.personal).map(([name, stats]) => {
-        return <PersonalStats name={name} stats={stats}></PersonalStats>;
+        return (
+          <PersonalStats key={name} name={name} stats={stats}></PersonalStats>
+        );
       }),
       // <WH3>Over the years, your chat underwent some changes<WH3>,
       <>
@@ -510,9 +574,9 @@ function WrappedCardList() {
     return (
       <GiftedChat
         renderInputToolbar={() => null}
-        messages={messages.map(([date, author, text]) => {
+        messages={messages.map(([date, author, text], i) => {
           return {
-            _id: 1,
+            _id: date + i + text,
             createdAt: dayjs(date).toDate(),
             user: {
               _id: author,

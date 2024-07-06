@@ -16,6 +16,7 @@ export function Decoration({ asset, x, y, size = 150 }) {
       position="absolute"
       objectFit="contain"
       resizeMode="contain"
+      zIndex={-1}
       top={y}
       left={x}
       transform={[
