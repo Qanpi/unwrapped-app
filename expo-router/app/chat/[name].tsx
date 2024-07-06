@@ -175,8 +175,14 @@ const PersonalStats = ({
     return (
       <Popover size="$5">
         <Popover.Trigger alignSelf="flex-end" asChild>
-          <Button chromeless icon={HelpCircle} fontSize={10} p={0} opacity={0.5}>
-            How are these calculated? 
+          <Button
+            chromeless
+            iconAfter={HelpCircle}
+            fontSize={10}
+            p={0}
+            opacity={0.5}
+          >
+            How are these calculated
           </Button>
         </Popover.Trigger>
 
@@ -210,11 +216,11 @@ const PersonalStats = ({
         >
           <Popover.Arrow borderWidth={1} borderColor="$borderColor" />
 
-          <YStack space="$3">
-            <XStack space="$3">
-              <Label size="$3">Name</Label>
-              <Input size="$3" />
-            </XStack>
+          <YStack>
+            <View>
+              <H6>Personality type</H6>
+              <Paragraph>how this is calculated</Paragraph>
+            </View>
           </YStack>
         </Popover.Content>
       </Popover>
