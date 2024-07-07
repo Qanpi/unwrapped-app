@@ -2,12 +2,14 @@ import {
   Circle,
   HelpCircle,
   Share2,
+  Share as ShareIcon,
   SlidersHorizontal,
+  MoreHorizontal,
 } from "@tamagui/lucide-icons";
 import type { GetProps } from "tamagui";
 import { BlurView } from "expo-blur";
 import { GiftedChat } from "react-native-gifted-chat";
-import WordCloud from "rn-wordcloud";
+import WordCloud from "../../react-native-wordcloud";
 import * as FileSystem from "expo-file-system";
 import { Stack, useLocalSearchParams } from "expo-router";
 import {
@@ -36,6 +38,7 @@ import {
   Popover,
   ScrollView,
   Spacer,
+  Spinner,
   Square,
   styled,
   Text,
@@ -56,6 +59,8 @@ import Share from "react-native-share";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import localizedFormat from "dayjs/plugin/localizedFormat";
+import { TouchableOpacity } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 dayjs.extend(localizedFormat);
 dayjs.extend(customParseFormat);
@@ -82,11 +87,11 @@ const WaterMark = () => {
 
 type BaseCardProps = {
   index?: number;
-  watermark: boolean;
+  watermark?: boolean;
 } & GetProps<typeof Card.Background>;
 
 const BaseCard = forwardRef(function BaseCard(
-  { children, index, watermark=true, ...rest }: BaseCardProps,
+  { children, index, watermark = true, ...rest }: BaseCardProps,
   ref
 ) {
   const { width, height } = useContext(WrappedContext);
@@ -110,9 +115,7 @@ const BaseCard = forwardRef(function BaseCard(
         {decorations}
         {children}
       </Card.Background>
-      <Card.Footer>
-        {watermark ? <WaterMark></WaterMark> : null}
-      </Card.Footer>
+      <Card.Footer>{watermark ? <WaterMark></WaterMark> : null}</Card.Footer>
     </Card>
   );
 });
@@ -151,28 +154,30 @@ const PersonalStats = ({
   }
 
   const StatRow = ({ title, stat }) => {
+    const paywallStyle = {
+      color: "#fff0",
+
+      shadowOpacity: 1,
+      shadowColor: "#000",
+      shadowRadius: 15,
+
+      textShadowColor: "rgba(255,255,255,0.5)",
+      textShadowOffset: {
+        width: 0,
+        height: 0,
+      },
+      textShadowRadius: 15,
+    };
+
     return (
       <XStack justifyContent="space-between">
         <Paragraph>{title} </Paragraph>
 
-        <Paragraph
-          style={{
-            color: "#fff0",
-
-            shadowOpacity: 1,
-            shadowColor: "#000",
-            shadowRadius: 15,
-
-            textShadowColor: "rgba(255,255,255,0.5)",
-            textShadowOffset: {
-              width: 0,
-              height: 0,
-            },
-            textShadowRadius: 15,
-          }}
-        >
-          {stat}
-        </Paragraph>
+        <TouchableOpacity hitSlop={20} onPress={() => console.log("paywall")}>
+          <Paragraph userSelect={"none"} style={paywallStyle}>
+            {stat}
+          </Paragraph>
+        </TouchableOpacity>
       </XStack>
     );
   };
@@ -181,12 +186,7 @@ const PersonalStats = ({
     return (
       <Popover size="$5">
         <Popover.Trigger alignSelf="flex-end" asChild>
-          <Button
-            chromeless
-            iconAfter={HelpCircle}
-            fontSize={10}
-            opacity={0.5}
-          >
+          <Button chromeless iconAfter={HelpCircle} fontSize={10} opacity={0.5}>
             How are these calculated
           </Button>
         </Popover.Trigger>
@@ -272,16 +272,6 @@ function WrappedCardList() {
   useEffect(() => {
     if (!local.name) return; //FIXME: 404 page
 
-    const dateReviver = (key, value) => {
-      const date = dayjs(value, "YYYY-MM-DDTHH:mm:ss", true);
-
-      if (date.isValid()) {
-        return date;
-      }
-
-      return value;
-    };
-
     const initializeChat = async () => {
       const chatRaw = await AsyncStorage.getItem(chatKey as string);
       const chat = JSON.parse(chatRaw);
@@ -344,7 +334,7 @@ function WrappedCardList() {
     }
   };
 
-  const handlePressShare = async () => {
+  const handlePressShareEverything = async () => {
     //FIXME: handleError gracefully
     const shareCapturedFiles = async (uris: string[]) => {
       const response = await Share.open({
@@ -407,6 +397,59 @@ function WrappedCardList() {
       mb: "$-5",
     });
 
+    const ColoredWordCloud = ({ words }) => {
+      const minFont = 10;
+      const maxFont = 50;
+      const fontOffset = 10;
+
+      //asume sorted
+      const counts = words.map(([_, count]) => count);
+
+      const getColor = (count: number) => {
+        const pos = counts.findIndex((c) => c === count);
+
+        if (pos < 5) {
+          return "$accent";
+        }
+
+        return "$background2";
+      };
+
+      return (
+        <WordCloud
+          renderWord={(text, style, onLayout) => {
+            const color = style.color;
+            delete style.color;
+
+            return (
+              <Paragraph
+                style={{
+                  ...style,
+                  fontSize: style.fontSize - 3,
+                  fontWeight: 800,
+                }}
+                color={color}
+                onTextLayout={onLayout}
+              >
+                {text}
+              </Paragraph>
+            );
+          }}
+          options={{
+            words: words.map(([word, count]) => {
+              return { text: word, value: count, color: getColor(count) }; //TODO: colors
+            }),
+            verticalEnabled: true,
+            minFont,
+            maxFont,
+            fontOffset,
+            width,
+            height,
+          }}
+        ></WordCloud>
+      );
+    };
+
     const { timespan, total, messagesPerPerson } = data;
     return [
       <BaseCard backgroundColor="$background4" gap="$0" watermark={false}>
@@ -457,9 +500,9 @@ function WrappedCardList() {
           })}
         </YStack>
       </BaseCard>,
-      <BaseCard backgroundColor="$background2">
-        <H4>Messages types pie chart</H4>
-      </BaseCard>,
+      // <BaseCard backgroundColor="$background2">
+      //   <H4>Messages types pie chart</H4>
+      // </BaseCard>,
       <BaseCard backgroundColor="$background3">
         <WH2>
           Out of{" "}
@@ -470,27 +513,26 @@ function WrappedCardList() {
         </WH2>
       </BaseCard>,
       <BaseCard backgroundColor="$background3">
-        <WordCloud
-          options={{
-            words: data.mostPopularWords.slice(0, 40).map(([word, count]) => {
-              return { text: word, value: count }; //TODO: colors
-            }),
-            verticalEnabled: true,
-            minFont: 10,
-            maxFont: 50,
-            fontOffset: 10,
-            margin: 2,
-            width,
-            height,
-            fontFamily: "Arial", //TODO: update this
-          }}
-        ></WordCloud>
+        <ColoredWordCloud
+          words={data.mostPopularWords.slice(0, 40)}
+        ></ColoredWordCloud>
       </BaseCard>,
       <BaseCard backgroundColor="$background3">
         <WH2>And your most popular emojis...</WH2>
       </BaseCard>,
       <BaseCard backgroundColor="$background3">
         <WordCloud
+          renderWord={(text, style, onLayout) => (
+            <Text
+              style={{
+                ...style,
+                fontSize: style.fontSize - 7,
+              }}
+              onLayout={onLayout}
+            >
+              {text}
+            </Text>
+          )}
           options={{
             words: data.mostPopularEmojis.slice(0, 25).map(([word, count]) => {
               return { text: word, value: count }; //TODO: colors
@@ -608,7 +650,9 @@ function WrappedCardList() {
         <Paragraph>wrapped.</Paragraph>
         <Spacer></Spacer>
         <YStack>
-          <Paragraph>Get on google pay</Paragraph>
+          {/* <Image source={{
+            uri: require("./../../assets/google-play.png"),
+          }}></Image> */}
           <Paragraph>Get on ios</Paragraph>
         </YStack>
       </BaseCard>,
@@ -651,52 +695,98 @@ function WrappedCardList() {
       <Stack.Screen
         options={{
           title: !loading ? chatKey : "Loading...",
-          headerRight: (props) => <Share2 onPress={handlePressShare}></Share2>, //FIXME: hit slop and touchable opacity for web cursor
+          headerRight: (props) => (
+            <Popover placement="bottom">
+              <Popover.Trigger asChild>
+                <TouchableOpacity>
+                  <MoreHorizontal></MoreHorizontal>
+                </TouchableOpacity>
+              </Popover.Trigger>
+
+              <Popover.Content
+                borderWidth={1}
+                borderColor="$borderColor"
+                enterStyle={{ y: -10, opacity: 0 }}
+                exitStyle={{ y: -10, opacity: 0 }}
+                elevate
+                animation={[
+                  "quick",
+                  {
+                    opacity: {
+                      overshootClamping: true,
+                    },
+                  },
+                ]}
+              >
+
+                <YStack gap="$3">
+                  <Paragraph>Delete chat</Paragraph> 
+                </YStack>
+              </Popover.Content>
+            </Popover>
+          ), //FIXME: hit slop and touchable opacity for web cursor
         }}
       />
 
-      <ScrollView
-        horizontal
-        snapToInterval={width + gap}
-        decelerationRate={0.85}
-      >
-        <XStack px={padding} gap={gap}>
-          <Theme name="spotify">
-            <WrappedContext.Provider value={{ width, height }}>
-              {getCardPresets().map((card, i) => (
-                <card.type
-                  {...card.props}
-                  index={i + 1}
-                  key={i}
-                  ref={(el) => assignCardRef(el, i)}
-                ></card.type>
-              ))}
-            </WrappedContext.Provider>
-          </Theme>
-        </XStack>
-      </ScrollView>
+      {!loading ? (
+        <ScrollView
+          horizontal
+          snapToInterval={width + gap}
+          decelerationRate={0.85}
+          flexGrow={0}
+          backgroundColor="yellow"
+        >
+          <XStack px={padding} gap={gap}>
+            <Theme name="spotify">
+              <WrappedContext.Provider value={{ width, height }}>
+                {getCardPresets().map((card, i) => (
+                  <card.type
+                    {...card.props}
+                    index={i + 1}
+                    key={i}
+                    ref={(el) => assignCardRef(el, i)}
+                  ></card.type>
+                ))}
+              </WrappedContext.Provider>
+            </Theme>
+          </XStack>
+        </ScrollView>
+      ) : (
+        <View
+          width={width}
+          height={height}
+          backgroundColor="purple"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Paragraph>Analyzing your chat...</Paragraph>
+          <Spinner></Spinner>
+        </View>
+      )}
+      <XStack height="$10">
+        <Button height="100%" chromeless flexDirection="column">
+          <Share2></Share2>
+          <Paragraph>This page</Paragraph>
+        </Button>
+        <Button
+          height="100%"
+          chromeless
+          flexDirection="column"
+          onPress={handlePressShareEverything}
+        >
+          <ShareIcon></ShareIcon>
+          <Paragraph>Everything</Paragraph>
+        </Button>
+      </XStack>
     </>
   );
 }
 
 function ChatScreen() {
   return (
-    <>
-      <YStack flex={1} justifyContent="center" alignItems="center" py="$5">
-        <WrappedCardList></WrappedCardList>
-
-        <XStack>
-          <Button minHeight={"$7"} chromeless flexDirection="column">
-            <Circle fill="yellow"></Circle>
-            <Paragraph>Theme</Paragraph>
-          </Button>
-          <Button chromeless flexDirection="column">
-            <SlidersHorizontal></SlidersHorizontal>
-            <Paragraph>Adjust</Paragraph>
-          </Button>
-        </XStack>
-      </YStack>
-    </>
+    <YStack flex={1} paddingTop="$5" alignItems="center">
+      <WrappedCardList></WrappedCardList>
+    </YStack>
   );
 }
 
