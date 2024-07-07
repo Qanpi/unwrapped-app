@@ -59,7 +59,7 @@ export default function TabLayout() {
             <Settings mr="$3"></Settings>
           </Link>
         ),
-        tabBarActiveTintColor: theme.red10.val,
+        tabBarActiveTintColor: theme.purple5.val,
       }}
     >
       <Tabs.Screen

@@ -844,3 +844,8 @@
     body{background:var(--background);color:var(--color)}
     .t_gray_active_ProgressIndicator, .t_gray_active_SliderThumb, .t_gray_active_SwitchThumb, .t_gray_active_Tooltip, .t_light .t_dark .t_gray_active_ProgressIndicator, .t_light .t_dark .t_gray_active_SliderThumb, .t_light .t_dark .t_gray_active_SwitchThumb, .t_light .t_dark .t_gray_active_Tooltip {--color:var(--color-142);--colorHover:var(--color-143);--colorPress:var(--color-141);--colorFocus:var(--color-141);--background:var(--color-150);--backgroundHover:var(--color-149);--backgroundPress:var(--color-150);--backgroundFocus:var(--color-149);--borderColor:var(--color-148);--borderColorHover:var(--color-147);--borderColorFocus:var(--color-146);--borderColorPress:var(--color-145);}
   }
+:root .t_spotify_dark {--background:red;--backgroundHover:var(--color-142);--backgroundPress:var(--color-143);--backgroundFocus:var(--color-144);--borderColor:var(--color-143);--borderColorHover:var(--color-144);--color:#ddd;--colorHover:var(--color-151);--colorPress:var(--color-150);--colorFocus:var(--color-146);--shadowColor:var(--color-50);--shadowColorHover:var(--color-51);}
+@media(prefers-color-scheme:light){
+    body{background:var(--background);color:var(--color)}
+    .t_spotify_dark {--background:red;--backgroundHover:var(--color-142);--backgroundPress:var(--color-143);--backgroundFocus:var(--color-144);--borderColor:var(--color-143);--borderColorHover:var(--color-144);--color:#ddd;--colorHover:var(--color-151);--colorPress:var(--color-150);--colorFocus:var(--color-146);--shadowColor:var(--color-50);--shadowColorHover:var(--color-51);}
+  }
