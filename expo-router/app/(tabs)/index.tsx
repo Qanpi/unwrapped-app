@@ -2,7 +2,16 @@ import { FilePlus } from "@tamagui/lucide-icons";
 import WordCloud from "rn-wordcloud";
 import * as DocumentPicker from "expo-document-picker";
 import { router } from "expo-router";
-import { Button, ListItem, Paragraph, XStack, YGroup, YStack } from "tamagui";
+import {
+  Button,
+  ListItem,
+  Paragraph,
+  Popover,
+  Text,
+  XStack,
+  YGroup,
+  YStack,
+} from "tamagui";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
@@ -102,6 +111,7 @@ export default function ChatsScreen() {
             );
           })}
         </YGroup>
+       
       </YStack>
     </DefaultYStack>
   );
