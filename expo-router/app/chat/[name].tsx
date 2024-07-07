@@ -4,6 +4,7 @@ import {
   Share2,
   SlidersHorizontal,
 } from "@tamagui/lucide-icons";
+import type { GetProps } from "tamagui";
 import { BlurView } from "expo-blur";
 import { GiftedChat } from "react-native-gifted-chat";
 import WordCloud from "rn-wordcloud";
@@ -38,8 +39,10 @@ import {
   Square,
   styled,
   Text,
+  Theme,
   Tooltip,
   TooltipGroup,
+  useTheme,
   useWindowDimensions,
   View,
   XStack,
@@ -53,7 +56,6 @@ import Share from "react-native-share";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import localizedFormat from "dayjs/plugin/localizedFormat";
-import { tokens } from "@tamagui/config/v3";
 
 dayjs.extend(localizedFormat);
 dayjs.extend(customParseFormat);
@@ -63,14 +65,28 @@ const WrappedContext = createContext({
   height: 0,
 });
 
-interface BaseCardProps {
-  backgroundColor?: string;
-  children?: ReactNode;
-  index: number;
-}
+const WaterMark = () => {
+  return (
+    <XStack alignItems="center" gap="$1">
+      <Image
+        source={{
+          uri: require("./../../assets/images/logo_96.png"),
+          width: 12,
+          height: 12,
+        }}
+      ></Image>
+      <Paragraph fontSize={11}>Unwrapped</Paragraph>
+    </XStack>
+  );
+};
+
+type BaseCardProps = {
+  index?: number;
+  watermark: boolean;
+} & GetProps<typeof Card.Background>;
 
 const BaseCard = forwardRef(function BaseCard(
-  { backgroundColor, children, index }: BaseCardProps,
+  { children, index, watermark=true, ...rest }: BaseCardProps,
   ref
 ) {
   const { width, height } = useContext(WrappedContext);
@@ -83,29 +99,19 @@ const BaseCard = forwardRef(function BaseCard(
         <H4>{String(index).padStart(2, "0")}</H4>
       </Card.Header>
       <Card.Background
-        bg={backgroundColor}
         alignItems="center"
         justifyContent="center"
         gap="$2"
         p="$3"
         //allow press events
         pointerEvents="auto"
-        zIndex={100}
+        {...rest}
       >
         {decorations}
         {children}
       </Card.Background>
       <Card.Footer>
-        <XStack alignItems="center" flex={1} gap="$1">
-          <Image
-            source={{
-              uri: require("./../../assets/images/logo_96.png"),
-              width: 12,
-              height: 12,
-            }}
-          ></Image>
-          <Paragraph fontSize={11}>Unwrapped</Paragraph>
-        </XStack>
+        {watermark ? <WaterMark></WaterMark> : null}
       </Card.Footer>
     </Card>
   );
@@ -179,7 +185,6 @@ const PersonalStats = ({
             chromeless
             iconAfter={HelpCircle}
             fontSize={10}
-            p={0}
             opacity={0.5}
           >
             How are these calculated
@@ -397,27 +402,32 @@ function WrappedCardList() {
     });
 
     const BigNumber = styled(H1, {
-      fontSize: 100,
-      lineHeight: 100,
+      fontSize: 80,
+      lineHeight: 80,
       mb: "$-5",
     });
 
     const { timespan, total, messagesPerPerson } = data;
     return [
-      <>
-        <WH2 mb="$-2">{chatName}</WH2>
-        <Paragraph>{`${dayjs(timespan.from).format("L")} - ${dayjs(
-          timespan.to
-        ).format("L")}`}</Paragraph>
-      </>,
-      <>
-        <WH2>These {timespan.days} days have been fruitful.</WH2>
+      <BaseCard backgroundColor="$background4" gap="$0" watermark={false}>
+        <WH2 mb="$-1">{chatName}</WH2>
+        <Paragraph color="$gray9">{`${dayjs(timespan.from).format(
+          "L"
+        )} - ${dayjs(timespan.to).format("L")}`}</Paragraph>
+        <Spacer></Spacer>
+        <WaterMark></WaterMark>
+      </BaseCard>,
+      <BaseCard backgroundColor="$background2">
+        <WH2>
+          These <H2 color="$background4">{timespan.days}</H2> days have been
+          fruitful.
+        </WH2>
         <Paragraph>
           In total, you exchanged{" "}
-          <Paragraph color="red">{total.messages}</Paragraph> messages.
+          <Paragraph color="$background3">{total.messages}</Paragraph> messages.
         </Paragraph>
-      </>,
-      <>
+      </BaseCard>,
+      <BaseCard backgroundColor="$background2">
         <YStack alignSelf="stretch" p="$5">
           <H4 mb="$4">Messages per person</H4>
           {messagesPerPerson.map((p) => {
@@ -432,11 +442,13 @@ function WrappedCardList() {
               >
                 <Paragraph>{name}</Paragraph>
                 <XStack alignItems="center" gap="$2" width={percentage}>
-                  <Paragraph fontSize={11}>{percentage}</Paragraph>
+                  <Paragraph color="$background3" opacity={0.7} fontSize={11}>
+                    {percentage}
+                  </Paragraph>
                   <Square
-                    height={12}
+                    height={10}
                     flex={1}
-                    backgroundColor="red"
+                    backgroundColor="$background3"
                     borderRadius="$1"
                   ></Square>
                 </XStack>
@@ -444,17 +456,20 @@ function WrappedCardList() {
             );
           })}
         </YStack>
-      </>,
-      <>
+      </BaseCard>,
+      <BaseCard backgroundColor="$background2">
         <H4>Messages types pie chart</H4>
-      </>,
-      <>
+      </BaseCard>,
+      <BaseCard backgroundColor="$background3">
         <WH2>
-          Out of {new Intl.NumberFormat().format(total.words)} words, your most
-          popular were...
+          Out of{" "}
+          <WH2 color="$background2">
+            {new Intl.NumberFormat().format(total.words)}
+          </WH2>{" "}
+          words, your most popular were...
         </WH2>
-      </>,
-      <>
+      </BaseCard>,
+      <BaseCard backgroundColor="$background3">
         <WordCloud
           options={{
             words: data.mostPopularWords.slice(0, 40).map(([word, count]) => {
@@ -470,34 +485,40 @@ function WrappedCardList() {
             fontFamily: "Arial", //TODO: update this
           }}
         ></WordCloud>
-      </>,
-      <WH2>And your most popular emojis...</WH2>,
-      <WordCloud
-        options={{
-          words: data.mostPopularEmojis.slice(0, 25).map(([word, count]) => {
-            return { text: word, value: count }; //TODO: colors
-          }),
-          minFont: 25, //TODO: proportioanlize to count
-          maxFont: 70,
-          margin: 7, //FIXME: patch npm lib
-          fontOffset: 5,
-          width,
-          height,
-          fontFamily: "Arial", //TODO: update this
-        }}
-      ></WordCloud>,
-      // <>
+      </BaseCard>,
+      <BaseCard backgroundColor="$background3">
+        <WH2>And your most popular emojis...</WH2>
+      </BaseCard>,
+      <BaseCard backgroundColor="$background3">
+        <WordCloud
+          options={{
+            words: data.mostPopularEmojis.slice(0, 25).map(([word, count]) => {
+              return { text: word, value: count }; //TODO: colors
+            }),
+            minFont: 25, //TODO: proportioanlize to count
+            maxFont: 70,
+            margin: 7, //FIXME: patch npm lib
+            fontOffset: 5,
+            width,
+            height,
+            fontFamily: "Arial", //TODO: update this
+          }}
+        ></WordCloud>
+      </BaseCard>,
+      // <BaseCard>
       //   <WH2>The messages kept coming in non-stop.</WH2>
       //   <Paragraph>{data.longestDayRange}</Paragraph>
-      // </>,
+      // </BaseCard>,
       // <Paragraph>heatmap</Paragraph>,
-      <WH2>Meanwhile, your longest streak spanned...</WH2>,
-      <>
+      <BaseCard backgroundColor="$background4">
+        <WH2>Meanwhile, your longest streak spanned...</WH2>
+      </BaseCard>,
+      <BaseCard backgroundColor="$background4" pb="25%">
         <View
           alignItems="center"
           justifyContent="flex-end"
-          width={200}
-          height={270}
+          width={180}
+          height={230}
         >
           <Image
             source={{
@@ -514,18 +535,20 @@ function WrappedCardList() {
         <Paragraph>{`${dayjs(data.longestStreak.from).format("ll")} - ${dayjs(
           data.longestStreak.to
         ).format("ll")}`}</Paragraph>
-      </>,
+      </BaseCard>,
 
-      <WH2>
-        While the longest you went <WH2 fontStyle="italic">without</WH2> talking
-        was...
-      </WH2>,
-      <>
+      <BaseCard backgroundColor="$background4">
+        <WH2>
+          While the longest you went <WH2 fontStyle="italic">without</WH2>{" "}
+          talking was...
+        </WH2>
+      </BaseCard>,
+      <BaseCard backgroundColor="$background4" pb="25%">
         <View
           alignItems="center"
           justifyContent="flex-end"
-          width={290}
-          height={270}
+          width={250}
+          height={230}
         >
           <Image
             source={{
@@ -542,29 +565,45 @@ function WrappedCardList() {
         <Paragraph>{`${dayjs(data.longestSilence.from).format("ll")} - ${dayjs(
           data.longestSilence.to
         ).format("ll")}`}</Paragraph>
-      </>,
-      <WH2>Now let's look at some individual statistics 👀</WH2>,
+      </BaseCard>,
+      <BaseCard backgroundColor="$background5">
+        <WH2>Now let's look at some individual statistics 👀</WH2>
+      </BaseCard>,
       ...Object.entries(data.personal).map(([name, stats]) => {
         return (
-          <PersonalStats key={name} name={name} stats={stats}></PersonalStats>
+          <BaseCard backgroundColor="$background">
+            <PersonalStats key={name} name={name} stats={stats}></PersonalStats>
+          </BaseCard>
         );
       }),
       // <WH3>Over the years, your chat underwent some changes<WH3>,
-      <>
-        <WH2>How it started</WH2>
-        <View width={300} height={400} backgroundColor="yellow">
+      <BaseCard backgroundColor="$background2">
+        <WH2 mt={50}>How it started</WH2>
+        <View
+          width={300}
+          height={400}
+          backgroundColor="#0001"
+          borderRadius="$5"
+          p="$1"
+        >
           <WrappedChat
             messages={data.first10Messages.slice(0, 5)}
           ></WrappedChat>
         </View>
-      </>,
-      <>
-        <WH2>How it's going</WH2>
-        <View width={300} height={400} backgroundColor="yellow">
+      </BaseCard>,
+      <BaseCard backgroundColor="$background2">
+        <WH2 mt={50}>How it's going</WH2>
+        <View
+          width={300}
+          height={400}
+          backgroundColor="#0001"
+          borderRadius="$5"
+          p="$1"
+        >
           <WrappedChat messages={data.last10Messages.slice(0, 5)}></WrappedChat>
         </View>
-      </>,
-      <>
+      </BaseCard>,
+      <BaseCard backgroundColor="$background4">
         <WH2 mb="$-3">{chatName}</WH2>
         <Paragraph>wrapped.</Paragraph>
         <Spacer></Spacer>
@@ -572,9 +611,18 @@ function WrappedCardList() {
           <Paragraph>Get on google pay</Paragraph>
           <Paragraph>Get on ios</Paragraph>
         </YStack>
-      </>,
+      </BaseCard>,
     ];
   };
+
+  const test = [
+    <BaseCard backgroundColor="$background1">
+      <YStack>
+        <Paragraph>Get on google pay</Paragraph>
+        <Paragraph>Get on ios</Paragraph>
+      </YStack>
+    </BaseCard>,
+  ];
 
   const WrappedChat = ({ messages }) => {
     return (
@@ -613,17 +661,18 @@ function WrappedCardList() {
         decelerationRate={0.85}
       >
         <XStack px={padding} gap={gap}>
-          <WrappedContext.Provider value={{ width, height }}>
-            {getCardPresets().map((cardChildren, index) => (
-              <BaseCard
-                key={index}
-                ref={(el) => assignCardRef(el, index)}
-                index={index + 1}
-              >
-                {cardChildren}
-              </BaseCard>
-            ))}
-          </WrappedContext.Provider>
+          <Theme name="spotify">
+            <WrappedContext.Provider value={{ width, height }}>
+              {getCardPresets().map((card, i) => (
+                <card.type
+                  {...card.props}
+                  index={i + 1}
+                  key={i}
+                  ref={(el) => assignCardRef(el, i)}
+                ></card.type>
+              ))}
+            </WrappedContext.Provider>
+          </Theme>
         </XStack>
       </ScrollView>
     </>

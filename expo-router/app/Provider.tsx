@@ -21,7 +21,7 @@ export function Provider({
   return (
     <TamaguiProvider
       config={config}
-      defaultTheme={colorScheme === "dark" ? "dark" : "light"}
+      defaultTheme={"unwrapped"}
       {...rest}
     >
       <PortalProvider shouldAddRootHost>
