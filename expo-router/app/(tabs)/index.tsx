@@ -18,16 +18,14 @@ import dayjs from "dayjs";
 import { useEffect } from "react";
 
 function ChatListItem({ name, lastUpdated }: { name: string }) {
-  const displayName = name.startsWith("WhatsApp Chat with ")
-    ? name.slice(20)
-    : name;
+  const displayName = name;
 
   return (
     <YGroup.Item>
       <ListItem
         onPress={() => router.navigate(`chat/${name}`)}
         pressTheme
-        title={displayName}
+        title={<Paragraph fontWeight="bold" color="$purple7">{displayName}</Paragraph>}
       >
         <ListItem.Subtitle>Last updated: {lastUpdated}</ListItem.Subtitle>
       </ListItem>
@@ -111,7 +109,6 @@ export default function ChatsScreen() {
             );
           })}
         </YGroup>
-       
       </YStack>
     </DefaultYStack>
   );
