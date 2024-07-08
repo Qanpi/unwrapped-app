@@ -1,0 +1,5 @@
+const Paywall = () => {
+    return (
+        <></>    
+    )
+}
