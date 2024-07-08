@@ -5,13 +5,15 @@ import {
   Share as ShareIcon,
   SlidersHorizontal,
   MoreHorizontal,
+  Trash2,
+  Bug,
 } from "@tamagui/lucide-icons";
 import type { GetProps } from "tamagui";
 import { BlurView } from "expo-blur";
 import { GiftedChat } from "react-native-gifted-chat";
 import WordCloud from "../../react-native-wordcloud";
 import * as FileSystem from "expo-file-system";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import {
   createContext,
   forwardRef,
@@ -61,6 +63,7 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import { TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useQueryClient } from "@tanstack/react-query";
 
 dayjs.extend(localizedFormat);
 dayjs.extend(customParseFormat);
@@ -121,6 +124,7 @@ const BaseCard = forwardRef(function BaseCard(
 });
 
 interface PersonalStats {
+  personalityType: string;
   mostPopularWord: { word: string; count: number };
   emoji: string;
   MBTI: string;
@@ -173,7 +177,7 @@ const PersonalStats = ({
       <XStack justifyContent="space-between">
         <Paragraph>{title} </Paragraph>
 
-        <TouchableOpacity hitSlop={20} onPress={() => console.log("paywall")}>
+        <TouchableOpacity hitSlop={5} onPress={() => console.log("paywall")}>
           <Paragraph userSelect={"none"} style={paywallStyle}>
             {stat}
           </Paragraph>
@@ -243,7 +247,7 @@ const PersonalStats = ({
       </Paragraph>
       <Spacer></Spacer>
       <YStack width="80%">
-        <StatRow title="Personality type:" stat={"TODO"}></StatRow>
+        <StatRow title="Personality type:" stat={stats.personalityType}></StatRow>
         <StatRow title="IQ:" stat={stats.iq.toFixed(1)}></StatRow>
 
         <Spacer></Spacer>
@@ -334,28 +338,25 @@ function WrappedCardList() {
     }
   };
 
-  const handlePressShareEverything = async () => {
+  const shareCapturedFiles = async (uris: string[]) => {
     //FIXME: handleError gracefully
-    const shareCapturedFiles = async (uris: string[]) => {
-      const response = await Share.open({
-        title: "title",
-        message: "message", //TODO:
+    const response = await Share.open({
+      type: "image/*",
+      urls: uris,
+    });
+  };
 
-        type: "image/*",
-        urls: uris,
-      });
-
-      // if (await Sharing.isAvailableAsync()) {
-      //   await Sharing.shareAsync("file://" + uri, {
-      //     dialogTitle: "Share your Wrapped",
-      //     mimeType: "image/jpg",
-      //     UTI: ".jpg"
-      //   });
-      // } else {
-      //   //FIXME: show a toast
-      //   alert("Sharing is not available on this platform");
-      // }
-    };
+  const handlePressShareEverything = async () => {
+    // if (await Sharing.isAvailableAsync()) {
+    //   await Sharing.shareAsync("file://" + uri, {
+    //     dialogTitle: "Share your Wrapped",
+    //     mimeType: "image/jpg",
+    //     UTI: ".jpg"
+    //   });
+    // } else {
+    //   //FIXME: show a toast
+    //   alert("Sharing is not available on this platform");
+    // }
 
     const urls: string[] = [];
 
@@ -659,15 +660,6 @@ function WrappedCardList() {
     ];
   };
 
-  const test = [
-    <BaseCard backgroundColor="$background1">
-      <YStack>
-        <Paragraph>Get on google pay</Paragraph>
-        <Paragraph>Get on ios</Paragraph>
-      </YStack>
-    </BaseCard>,
-  ];
-
   const WrappedChat = ({ messages }) => {
     return (
       <GiftedChat
@@ -690,6 +682,18 @@ function WrappedCardList() {
     );
   };
 
+  const scrollIndex = useRef(0);
+
+  const queryClient = useQueryClient();
+
+  const handlePressDeleteChat = async () => {
+    await AsyncStorage.removeItem(chatKey);
+    await queryClient.invalidateQueries({
+      queryKey: ["chats"],
+    });
+    router.navigate("/");
+  };
+
   return (
     <>
       <Stack.Screen
@@ -705,6 +709,7 @@ function WrappedCardList() {
 
               <Popover.Content
                 borderWidth={1}
+                padding={0}
                 borderColor="$borderColor"
                 enterStyle={{ y: -10, opacity: 0 }}
                 exitStyle={{ y: -10, opacity: 0 }}
@@ -718,9 +723,17 @@ function WrappedCardList() {
                   },
                 ]}
               >
-
-                <YStack gap="$3">
-                  <Paragraph>Delete chat</Paragraph> 
+                <YStack gap="$0">
+                  <Button
+                    justifyContent="flex-start"
+                    icon={Trash2}
+                    onPress={handlePressDeleteChat}
+                  >
+                    Delete chat
+                  </Button>
+                  <Button justifyContent="flex-start" icon={Bug}>
+                    Report issue
+                  </Button>
                 </YStack>
               </Popover.Content>
             </Popover>
@@ -730,11 +743,15 @@ function WrappedCardList() {
 
       {!loading ? (
         <ScrollView
+          onScroll={(e) => {
+            const x = e.nativeEvent.contentOffset.x;
+            const index = Math.round(x / (width + gap));
+            scrollIndex.current = index;
+          }}
           horizontal
           snapToInterval={width + gap}
           decelerationRate={0.85}
           flexGrow={0}
-          backgroundColor="yellow"
         >
           <XStack px={padding} gap={gap}>
             <Theme name="spotify">
@@ -755,7 +772,6 @@ function WrappedCardList() {
         <View
           width={width}
           height={height}
-          backgroundColor="purple"
           justifyContent="center"
           alignItems="center"
         >
@@ -764,7 +780,21 @@ function WrappedCardList() {
         </View>
       )}
       <XStack height="$10">
-        <Button height="100%" chromeless flexDirection="column">
+        <Button
+          height="100%"
+          flexDirection="column"
+          chromeless
+          onPress={async () => {
+            const uri = await captureRef(
+              cardRefs.current[scrollIndex.current],
+              {
+                format: "png",
+              }
+            );
+
+            shareCapturedFiles([uri]);
+          }}
+        >
           <Share2></Share2>
           <Paragraph>This page</Paragraph>
         </Button>
