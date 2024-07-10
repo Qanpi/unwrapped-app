@@ -238,6 +238,7 @@ function WrappedCardList() {
                       index={i + 1}
                       key={i}
                       ref={(el) => assignCardRef(el, i)}
+                      seed={chatKey + i}
                     ></card.type>
                   )
                 )}
