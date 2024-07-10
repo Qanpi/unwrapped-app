@@ -8,9 +8,10 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { SplashScreen, Stack } from "expo-router";
+import { SplashScreen, Stack, useRouter } from "expo-router";
 import { Provider } from "./Provider";
 import { Share, Share2 } from "@tamagui/lucide-icons";
+import { ShareIntentProvider } from "expo-share-intent";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -48,31 +49,42 @@ export default function RootLayout() {
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
+  const router = useRouter();
   return (
-    <Provider>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen
-            name="(tabs)"
-            options={{
-              headerShown: false,
-            }}
-          />
+    <ShareIntentProvider options={{
+      debug: true,
+      resetOnBackground: true,
+      onResetShareIntent: () => {
+        router.replace({
+          pathname: "/",
+        })
+      }
+    }}>
+      <Provider>
+        <ThemeProvider
+          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+        >
+          <Stack>
+            <Stack.Screen
+              name="(tabs)"
+              options={{
+                headerShown: false,
+              }}
+            />
 
-          <Stack.Screen
-            name="settings"
-            options={{
-              title: "Settings",
-              presentation: "card",
-              animation: "slide_from_right",
-            }}
-          />
+            <Stack.Screen
+              name="settings"
+              options={{
+                title: "Settings",
+                presentation: "card",
+                animation: "slide_from_right",
+              }}
+            />
 
-          <Stack.Screen
-            name="chat/[name]"
-          />
-        </Stack>
-      </ThemeProvider>
-    </Provider>
+            <Stack.Screen name="chat/[name]" />
+          </Stack>
+        </ThemeProvider>
+      </Provider>
+    </ShareIntentProvider>
   );
 }

@@ -1,7 +1,7 @@
 import { FilePlus } from "@tamagui/lucide-icons";
 import WordCloud from "rn-wordcloud";
 import * as DocumentPicker from "expo-document-picker";
-import { router } from "expo-router";
+import { router, useRouter } from "expo-router";
 import {
   Button,
   ListItem,
@@ -16,6 +16,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useEffect } from "react";
+import { useShareIntentContext } from "expo-share-intent";
 
 export function ChatListItem({ name, lastUpdated, onPress }: { name: string }) {
   return (
@@ -44,6 +45,19 @@ export function DefaultYStack({ children }) {
 }
 
 export default function ChatsScreen() {
+  const router = useRouter();
+
+  const { hasShareIntent } = useShareIntentContext();
+
+  useEffect(() => {
+    if (hasShareIntent) {
+      // we want to handle share intent event in a specific page
+      router.replace({
+        pathname: "shareintent",
+      });
+    }
+  }, [hasShareIntent]);
+
   const handlePressImport = async () => {
     const res = await DocumentPicker.getDocumentAsync({
       type: "*/*", //TODO: .zip support?
