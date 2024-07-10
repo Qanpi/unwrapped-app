@@ -42,6 +42,8 @@ export const getCardPresets = (
   height: number
 ) => {
   const { timespan, total, messagesPerPerson } = data;
+  const intlNumber = new Intl.NumberFormat();
+
   return [
     <BaseCard backgroundColor="$background4" gap="$0" watermark={false}>
       <WH2 mb="$-1">{chatName}</WH2>
@@ -53,12 +55,12 @@ export const getCardPresets = (
     </BaseCard>,
     <BaseCard backgroundColor="$background2">
       <WH2>
-        These <H2 color="$background4">{timespan.days}</H2> days have been
+        These <H2 color="$background4">{intlNumber.format(timespan.days)}</H2> days have been
         fruitful.
       </WH2>
       <Paragraph>
         In total, you exchanged{" "}
-        <Paragraph color="$background3">{total.messages}</Paragraph> messages.
+        <Paragraph color="$background3">{intlNumber.format(total.messages)}</Paragraph> messages.
       </Paragraph>
     </BaseCard>,
     <BaseCard backgroundColor="$background2">
@@ -98,7 +100,7 @@ export const getCardPresets = (
       <WH2>
         Out of{" "}
         <WH2 color="$background2">
-          {new Intl.NumberFormat().format(total.words)}
+          {intlNumber.format(total.words)}
         </WH2>{" "}
         words, your most popular were...
       </WH2>
@@ -131,7 +133,7 @@ export const getCardPresets = (
             return { text: word, value: count }; //TODO: colors
           }),
           minFont: 25, //TODO: proportioanlize to count
-          maxFont: 70,
+          maxFont: 80,
           margin: 7, //FIXME: patch npm lib
           fontOffset: 5,
           width,
@@ -146,9 +148,9 @@ export const getCardPresets = (
     // </BaseCard>,
     // <Paragraph>heatmap</Paragraph>,
     <BaseCard backgroundColor="$background4">
-      <WH2>Meanwhile, your longest streak spanned...</WH2>
+      <WH2 color="black">Meanwhile, your longest streak spanned...</WH2>
     </BaseCard>,
-    <BaseCard backgroundColor="$background4" pb="25%">
+    <BaseCard backgroundColor="$background4" pb="25%" >
       <View
         alignItems="center"
         justifyContent="flex-end"
@@ -164,10 +166,10 @@ export const getCardPresets = (
           position="absolute"
         ></Image>
 
-        <BigNumber>{data.longestStreak.streak}</BigNumber>
-        <Paragraph mb="$2">days</Paragraph>
+        <BigNumber color="black">{data.longestStreak.streak}</BigNumber>
+        <Paragraph mb="$2" color="black">days</Paragraph>
       </View>
-      <Paragraph>{`${dayjs(data.longestStreak.from).format("ll")} - ${dayjs(
+      <Paragraph color="black">{`${dayjs(data.longestStreak.from).format("ll")} - ${dayjs(
         data.longestStreak.to
       ).format("ll")}`}</Paragraph>
     </BaseCard>,
@@ -221,7 +223,7 @@ export const getCardPresets = (
         borderRadius="$5"
         p="$1"
       >
-        <WrappedChat messages={data.first10Messages.slice(0, 5)}></WrappedChat>
+        <WrappedChat messages={data.first10Messages.slice(0, 5).reverse()}></WrappedChat>
       </View>
     </BaseCard>,
     <BaseCard backgroundColor="$background2">
@@ -233,11 +235,11 @@ export const getCardPresets = (
         borderRadius="$5"
         p="$1"
       >
-        <WrappedChat messages={data.last10Messages.slice(0, 5)}></WrappedChat>
+        <WrappedChat messages={data.last10Messages.slice(0, 5).reverse()}></WrappedChat>
       </View>
     </BaseCard>,
     <BaseCard backgroundColor="$background4">
-      <WH2 mb="$-3">{chatName}</WH2>
+      <WH2 mb="$-2">{chatName}</WH2>
       <Paragraph>wrapped.</Paragraph>
       <Spacer></Spacer>
       <YStack>

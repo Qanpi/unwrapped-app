@@ -27,20 +27,22 @@ function formatTime(seconds) {
 }
 
 const StatRow = ({ title, stat, blur }) => {
-  const style = blur ? {
-    color: "#fff0",
+  const style = blur
+    ? {
+        color: "#fff0",
 
-    shadowOpacity: 1,
-    shadowColor: "#000",
-    shadowRadius: 15,
+        shadowOpacity: 1,
+        shadowColor: "#000",
+        shadowRadius: 15,
 
-    textShadowColor: "rgba(255,255,255,0.5)",
-    textShadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    textShadowRadius: 15,
-  } : {};
+        textShadowColor: "rgba(255,255,255,0.5)",
+        textShadowOffset: {
+          width: 0,
+          height: 0,
+        },
+        textShadowRadius: 15,
+      }
+    : {};
 
   return (
     <XStack justifyContent="space-between">
@@ -55,22 +57,27 @@ const StatRow = ({ title, stat, blur }) => {
   );
 };
 
-type StatRowTemplateProps = {stats: Partial<PersonalStats>, paywall: boolean}
+type StatRowTemplateProps = { stats: Partial<PersonalStats>; paywall: boolean };
 export const StatRowTemplate = ({ stats, paywall }: StatRowTemplateProps) => {
+  const template = [
+    {
+      title: "Personality type:",
+      stat: stats.personalityType,
+    },
+  ];
 
-  const template = [{
-    title: "Personality type:",
-    stat: stats.personalityType,
-  },
-  ]
   return (
     <>
-      <StatRow title="Personality type:" stat={stats.personalityType} blur={paywall}></StatRow>
+      <StatRow
+        title="Personality type:"
+        stat={stats.personalityType}
+        blur={paywall}
+      ></StatRow>
       <StatRow title="IQ:" stat={stats.iq.toFixed(1)}></StatRow>
 
       <Spacer></Spacer>
       <StatRow title="Convos started:" stat={stats.convosStarted}></StatRow>
-      <StatRow title="Convos ended:" stat={stats.convosEnded}></StatRow>
+      <StatRow title="Convos killed:" stat={stats.convosEnded}></StatRow>
       <StatRow
         title="Response time:"
         stat={"~" + formatTime(stats.averageResponseTime)}
@@ -155,12 +162,15 @@ export const PersonalStats = ({
   return (
     <>
       <H1 fontSize={100} lineHeight={150} mb="$-4" mt="$-10">
-        {stats.emoji}
+        {stats.emoji || "🛇"}
       </H1>
       <H6 mb="$-3">{name}</H6>
-      <Paragraph fontSize={10}>
-        said '{stats.mostPopularWord.word}' {stats.mostPopularWord.count} times
-      </Paragraph>
+      {stats.mostPopularWord.count > 0 ? (
+        <Paragraph fontSize={10}>
+          said '{stats.mostPopularWord.word}' {stats.mostPopularWord.count}{" "}
+          times
+        </Paragraph>
+      ) : null}
       <Spacer></Spacer>
       <YStack width="80%">
         <StatRowTemplate stats={stats}></StatRowTemplate>

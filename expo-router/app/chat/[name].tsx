@@ -156,8 +156,6 @@ function WrappedCardList() {
 
   const loading = !data;
 
-  const chatName = chatKey.replace(/\..+$/, "");
-
   const scrollIndex = useRef(0);
   const {width, height, gap, padding} = useWrappedCards();
 
@@ -233,7 +231,7 @@ function WrappedCardList() {
           <XStack px={padding} gap={gap}>
             <Theme name="spotify">
               <WrappedContext.Provider value={{ width, height }}>
-                {getCardPresets(chatName, data, width, height).map(
+                {getCardPresets(chatKey, data, width, height).map(
                   (card, i) => (
                     <card.type
                       {...card.props}
