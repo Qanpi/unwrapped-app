@@ -1,52 +1,36 @@
 import {
   Bug,
-  HelpCircle,
   MoreHorizontal,
   Share2,
   Share as ShareIcon,
-  Trash2,
+  Trash2
 } from "@tamagui/lucide-icons";
 import * as FileSystem from "expo-file-system";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { createContext, useEffect, useRef, useState } from "react";
-import { GiftedChat } from "react-native-gifted-chat";
 import { captureRef } from "react-native-view-shot";
 import {
-  Adapt,
   Button,
-  H1,
-  H2,
-  H3,
-  H4,
-  H6,
-  Image,
   Paragraph,
   Popover,
   ScrollView,
-  Spacer,
   Spinner,
-  Square,
-  styled,
-  Text,
   Theme,
   useWindowDimensions,
   View,
   XStack,
-  YStack,
+  YStack
 } from "tamagui";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Share from "react-native-share";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { BaseCard } from "app/BaseCard";
-import { WaterMark } from "app/WaterMark";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import { TouchableOpacity } from "react-native";
-import { PersonalStats } from "app/PersonalStats";
-import { getCardPresets } from "./Presets";
+import { getCardPresets } from "./presets";
 
 dayjs.extend(localizedFormat);
 dayjs.extend(customParseFormat);
@@ -55,6 +39,29 @@ export const WrappedContext = createContext({
   width: 0,
   height: 0,
 });
+
+export const useWrappedCards = () => {
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+
+  const padding = 30;
+  const { width, height } = ((w, h) => {
+    if (w > h) {
+      return {
+        width: (h * 1080) / 1920 - padding * 2,
+        height: h,
+      };
+    } else {
+      return {
+        width: w - padding * 2,
+        height: ((w - padding * 2) * 1920) / 1080,
+      };
+    }
+  })(windowWidth, windowHeight);
+
+  const gap = padding / 2;
+
+  return { width, height, gap, padding };
+};
 
 function WrappedCardList() {
   const local = useLocalSearchParams();
@@ -100,25 +107,6 @@ function WrappedCardList() {
 
     initializeChat().catch(console.error); //FIXME: handle error
   }, [local.name]);
-
-  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
-
-  const padding = 30;
-  const { width, height } = ((w, h) => {
-    if (w > h) {
-      return {
-        width: (h * 1080) / 1920 - padding * 2,
-        height: h,
-      };
-    } else {
-      return {
-        width: w - padding * 2,
-        height: ((w - padding * 2) * 1920) / 1080,
-      };
-    }
-  })(windowWidth, windowHeight);
-
-  const gap = padding / 2;
 
   const cardRefs = useRef([]);
   const assignCardRef = (el, index) => {
@@ -171,6 +159,7 @@ function WrappedCardList() {
   const chatName = chatKey.replace(/\..+$/, "");
 
   const scrollIndex = useRef(0);
+  const {width, height, gap, padding} = useWrappedCards();
 
   const queryClient = useQueryClient();
 
@@ -244,14 +233,16 @@ function WrappedCardList() {
           <XStack px={padding} gap={gap}>
             <Theme name="spotify">
               <WrappedContext.Provider value={{ width, height }}>
-                {getCardPresets(chatName, data, width, height).map((card, i) => (
-                  <card.type
-                    {...card.props}
-                    index={i + 1}
-                    key={i}
-                    ref={(el) => assignCardRef(el, i)}
-                  ></card.type>
-                ))}
+                {getCardPresets(chatName, data, width, height).map(
+                  (card, i) => (
+                    <card.type
+                      {...card.props}
+                      index={i + 1}
+                      key={i}
+                      ref={(el) => assignCardRef(el, i)}
+                    ></card.type>
+                  )
+                )}
               </WrappedContext.Provider>
             </Theme>
           </XStack>

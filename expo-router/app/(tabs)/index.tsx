@@ -17,15 +17,17 @@ import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useEffect } from "react";
 
-function ChatListItem({ name, lastUpdated }: { name: string }) {
-  const displayName = name;
-
+export function ChatListItem({ name, lastUpdated, onPress }: { name: string }) {
   return (
     <YGroup.Item>
       <ListItem
-        onPress={() => router.navigate(`chat/${name}`)}
+        onPress={onPress ? onPress : undefined}
         pressTheme
-        title={<Paragraph fontWeight="bold" color="$purple7">{displayName}</Paragraph>}
+        title={
+          <Paragraph fontWeight="bold" color="$purple7">
+            {name}
+          </Paragraph>
+        }
       >
         <ListItem.Subtitle>Last updated: {lastUpdated}</ListItem.Subtitle>
       </ListItem>
@@ -104,6 +106,7 @@ export default function ChatsScreen() {
               <ChatListItem
                 key={name}
                 name={name}
+                onPress={() => router.navigate(`chat/${name}`)}
                 lastUpdated={dayjs(parsed.lastAnalyzed).format("L")}
               ></ChatListItem>
             );
