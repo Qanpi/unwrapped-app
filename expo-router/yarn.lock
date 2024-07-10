@@ -6614,7 +6614,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-constants@npm:~16.0.0":
+"expo-constants@npm:^16.0.2, expo-constants@npm:~16.0.0":
   version: 16.0.2
   resolution: "expo-constants@npm:16.0.2"
   dependencies:
@@ -6722,7 +6722,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-linking@npm:~6.3.1":
+"expo-linking@npm:^6.3.1, expo-linking@npm:~6.3.1":
   version: 6.3.1
   resolution: "expo-linking@npm:6.3.1"
   dependencies:
@@ -6798,6 +6798,23 @@ __metadata:
     react-native-reanimated:
       optional: true
   checksum: ede9bf534206b344497f9ffe2df4681e4661b34ab72624521148ee716263d052109753f1f02b96110ab54f1e9b8e3b1a78ba51327b1b35926bbefa76042bd00b
+  languageName: node
+  linkType: hard
+
+"expo-share-intent@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "expo-share-intent@npm:2.3.0"
+  dependencies:
+    "@expo/config-plugins": "npm:~8.0.0"
+    expo-constants: "npm:^16.0.2"
+    expo-linking: "npm:^6.3.1"
+  peerDependencies:
+    expo: ^51
+    expo-constants: ">=16.0.1"
+    expo-linking: ">=6.3.1"
+    react: "*"
+    react-native: "*"
+  checksum: 8cddbd387edca971b3dc106b37b6e7383a5ca0c1b6f33e0490cb644aa40176250772ea2518f611da67a70adb1e962ba82ac2cea0d701285ed0f748819330f4c4
   languageName: node
   linkType: hard
 
@@ -12550,6 +12567,7 @@ __metadata:
     expo-font: "npm:~12.0.6"
     expo-linking: "npm:~6.3.1"
     expo-router: "npm:~3.5.15"
+    expo-share-intent: "npm:^2.3.0"
     expo-sharing: "npm:~12.0.1"
     expo-splash-screen: "npm:~0.27.4"
     expo-status-bar: "npm:^1.12.1"
