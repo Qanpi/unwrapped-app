@@ -47,17 +47,25 @@ export function DefaultYStack({ children }) {
 export default function ChatsScreen() {
   const router = useRouter();
 
-  const { hasShareIntent } = useShareIntentContext();
+  const { hasShareIntent, shareIntent } = useShareIntentContext();
 
   useEffect(() => {
     if (hasShareIntent) {
       // we want to handle share intent event in a specific page
-      console.log("redirecting to intent page")
-      router.replace({
-        pathname: "share-intent",
-      });
+      const file = shareIntent?.files?.[0];
+      if (file?.mimeType === "text/plain") {
+        initializeChat(file.fileName, file.path);
+      }
     }
   }, [hasShareIntent]);
+
+  const initializeChat = async (name, uri) => {
+    const key = name.replace(/WhatsApp Chat with /, "").replace(/.txt/, "");
+
+    await AsyncStorage.setItem(key, JSON.stringify({ uri }));
+
+    router.navigate(`chat/${key}`);
+  };
 
   const handlePressImport = async () => {
     const res = await DocumentPicker.getDocumentAsync({
@@ -71,10 +79,7 @@ export default function ChatsScreen() {
     }
 
     const { uri, name } = res.assets[0];
-
-    await AsyncStorage.setItem(name, JSON.stringify({ uri }));
-
-    router.navigate(`chat/${name}`);
+    initializeChat(name, uri);
   };
 
   useEffect(() => {
