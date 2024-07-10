@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "unwrapped",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",
@@ -34,7 +34,8 @@
       "expo-router",
       "expo-font",
       "expo-asset",
-      "expo-document-picker"
+      "expo-document-picker",
+      "expo-share-intent"
     ],
     "experiments": {
       "typedRoutes": true
