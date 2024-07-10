@@ -10,10 +10,6 @@ export default function ShareIntent() {
 
   return (
     <View style={styles.container}>
-      <Image
-        source={require("../assets/icon.png")}
-        style={[styles.logo, styles.gap]}
-      />
       {!hasShareIntent && <Text>No Share intent detected</Text>}
       {hasShareIntent && (
         <Text style={[styles.gap, { fontSize: 20 }]}>

@@ -52,8 +52,9 @@ export default function ChatsScreen() {
   useEffect(() => {
     if (hasShareIntent) {
       // we want to handle share intent event in a specific page
+      console.log("redirecting to intent page")
       router.replace({
-        pathname: "shareintent",
+        pathname: "share-intent",
       });
     }
   }, [hasShareIntent]);
@@ -114,7 +115,6 @@ export default function ChatsScreen() {
         </Button>
         <YGroup>
           {chats?.map(([name, data]) => {
-            console.log(data);
             const parsed = JSON.parse(data);
             return (
               <ChatListItem
