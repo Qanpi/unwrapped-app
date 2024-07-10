@@ -13,6 +13,76 @@ import {
   Spacer,
 } from "tamagui";
 
+function formatTime(seconds) {
+  // Hours, minutes and seconds
+  const hrs = ~~(seconds / 3600);
+  const mins = ~~((seconds % 3600) / 60);
+  const secs = ~~seconds % 60;
+
+  if (hrs > 0) {
+    return `${hrs}h ${mins}min`;
+  }
+
+  return `${mins}min ${secs}sec`;
+}
+
+const StatRow = ({ title, stat, blur }) => {
+  const style = blur ? {
+    color: "#fff0",
+
+    shadowOpacity: 1,
+    shadowColor: "#000",
+    shadowRadius: 15,
+
+    textShadowColor: "rgba(255,255,255,0.5)",
+    textShadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    textShadowRadius: 15,
+  } : {};
+
+  return (
+    <XStack justifyContent="space-between">
+      <Paragraph>{title} </Paragraph>
+
+      <TouchableOpacity hitSlop={5} onPress={() => console.log("paywall")}>
+        <Paragraph userSelect={"none"} style={style}>
+          {stat}
+        </Paragraph>
+      </TouchableOpacity>
+    </XStack>
+  );
+};
+
+type StatRowTemplateProps = {stats: Partial<PersonalStats>, paywall: boolean}
+export const StatRowTemplate = ({ stats, paywall }: StatRowTemplateProps) => {
+
+  const template = [{
+    title: "Personality type:",
+    stat: stats.personalityType,
+  },
+  ]
+  return (
+    <>
+      <StatRow title="Personality type:" stat={stats.personalityType} blur={paywall}></StatRow>
+      <StatRow title="IQ:" stat={stats.iq.toFixed(1)}></StatRow>
+
+      <Spacer></Spacer>
+      <StatRow title="Convos started:" stat={stats.convosStarted}></StatRow>
+      <StatRow title="Convos ended:" stat={stats.convosEnded}></StatRow>
+      <StatRow
+        title="Response time:"
+        stat={"~" + formatTime(stats.averageResponseTime)}
+      ></StatRow>
+      <StatRow
+        title="Screen time:"
+        stat={"~" + formatTime(stats.screenTime)}
+      ></StatRow>
+    </>
+  );
+};
+
 interface PersonalStats {
   personalityType: string;
   mostPopularWord: { word: string; count: number };
@@ -32,48 +102,6 @@ export const PersonalStats = ({
   name: string;
   stats: PersonalStats;
 }) => {
-  function formatTime(seconds) {
-    // Hours, minutes and seconds
-    const hrs = ~~(seconds / 3600);
-    const mins = ~~((seconds % 3600) / 60);
-    const secs = ~~seconds % 60;
-
-    if (hrs > 0) {
-      return `${hrs}h ${mins}min`;
-    }
-
-    return `${mins}min ${secs}sec`;
-  }
-
-  const StatRow = ({ title, stat }) => {
-    const paywallStyle = {
-      color: "#fff0",
-
-      shadowOpacity: 1,
-      shadowColor: "#000",
-      shadowRadius: 15,
-
-      textShadowColor: "rgba(255,255,255,0.5)",
-      textShadowOffset: {
-        width: 0,
-        height: 0,
-      },
-      textShadowRadius: 15,
-    };
-
-    return (
-      <XStack justifyContent="space-between">
-        <Paragraph>{title} </Paragraph>
-
-        <TouchableOpacity hitSlop={5} onPress={() => console.log("paywall")}>
-          <Paragraph userSelect={"none"} style={paywallStyle}>
-            {stat}
-          </Paragraph>
-        </TouchableOpacity>
-      </XStack>
-    );
-  };
-
   const InfoTooltip = () => {
     return (
       <Popover size="$5">
@@ -135,23 +163,7 @@ export const PersonalStats = ({
       </Paragraph>
       <Spacer></Spacer>
       <YStack width="80%">
-        <StatRow
-          title="Personality type:"
-          stat={stats.personalityType}
-        ></StatRow>
-        <StatRow title="IQ:" stat={stats.iq.toFixed(1)}></StatRow>
-
-        <Spacer></Spacer>
-        <StatRow title="Convos started:" stat={stats.convosStarted}></StatRow>
-        <StatRow title="Convos ended:" stat={stats.convosEnded}></StatRow>
-        <StatRow
-          title="Response time:"
-          stat={"~" + formatTime(stats.averageResponseTime)}
-        ></StatRow>
-        <StatRow
-          title="Screen time:"
-          stat={"~" + formatTime(stats.screenTime)}
-        ></StatRow>
+        <StatRowTemplate stats={stats}></StatRowTemplate>
         <InfoTooltip></InfoTooltip>
       </YStack>
     </>

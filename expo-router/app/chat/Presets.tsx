@@ -3,23 +3,37 @@ import { PersonalStats } from "app/PersonalStats";
 import { WaterMark } from "app/WaterMark";
 import dayjs from "dayjs";
 import {
-  View,
-  styled,
+  H1,
   H2,
   H3,
-  H1,
+  H4,
+  Image,
   Paragraph,
   Spacer,
-  YStack,
-  H4,
-  XStack,
   Square,
-  Image,
   Text,
+  View,
+  XStack,
+  YStack,
+  styled,
 } from "tamagui";
-import WordCloud from "../../react-native-wordcloud";
-import { WrappedChat } from "./WrappedChat";
+import WordCloud from "../../react-native-wordcloud/src";
 import { ColoredWordCloud } from "./ColoredWordCloud";
+import { WrappedChat } from "./WrappedChat";
+
+export const WH2 = styled(H2, {
+  textAlign: "center",
+});
+
+export const WH3 = styled(H3, {
+  textAlign: "center",
+});
+
+export const BigNumber = styled(H1, {
+  fontSize: 80,
+  lineHeight: 80,
+  mb: "$-5",
+});
 
 export const getCardPresets = (
   chatName: string,
@@ -27,20 +41,6 @@ export const getCardPresets = (
   width: number,
   height: number
 ) => {
-  const WH2 = styled(H2, {
-    textAlign: "center",
-  });
-
-  const WH3 = styled(H3, {
-    textAlign: "center",
-  });
-
-  const BigNumber = styled(H1, {
-    fontSize: 80,
-    lineHeight: 80,
-    mb: "$-5",
-  });
-
   const { timespan, total, messagesPerPerson } = data;
   return [
     <BaseCard backgroundColor="$background4" gap="$0" watermark={false}>

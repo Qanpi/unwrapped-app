@@ -7,20 +7,21 @@ import { WaterMark } from "./WaterMark";
 type BaseCardProps = {
   index?: number;
   watermark?: boolean;
+  seed?: string;
 } & GetProps<typeof Card.Background>;
 
 export const BaseCard = forwardRef(function BaseCard(
-  { children, index, watermark = true, ...rest }: BaseCardProps,
+  { children, index, watermark = true, seed, ...rest }: BaseCardProps,
   ref
 ) {
   const { width, height } = useContext(WrappedContext);
 
-  const decorations = useCornerDecorations(width, height, 4);
+  const decorations = useCornerDecorations(width, height, 4, seed);
 
   return (
     <Card ref={ref} collapsable={false} width={width} height={height} px="$2">
       <Card.Header>
-        <H4>{String(index).padStart(2, "0")}</H4>
+        <H4>{index && String(index).padStart(2, "0")}</H4>
       </Card.Header>
       <Card.Background
         alignItems="center"
