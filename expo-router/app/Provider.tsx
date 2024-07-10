@@ -21,10 +21,6 @@ export function Provider({
   children,
   ...rest
 }: Omit<TamaguiProviderProps, "config">) {
-  const { hasShareIntent, shareIntent, resetShareIntent, error } =
-    useShareIntent();
-  console.log(hasShareIntent, shareIntent);
-
   const colorScheme = useColorScheme();
 
   return (
