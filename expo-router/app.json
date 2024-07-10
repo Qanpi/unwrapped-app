@@ -35,7 +35,12 @@
       "expo-font",
       "expo-asset",
       "expo-document-picker",
-      "expo-share-intent"
+      ["expo-share-intent", {
+        "iosActivationRules": {
+            "NSExtensionActivationSupportsFileWithMaxCount": 1
+          },
+          "androidIntentFilters": ["*/*"]
+      }]
     ],
     "experiments": {
       "typedRoutes": true
