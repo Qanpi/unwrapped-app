@@ -70,6 +70,7 @@ export const Paywall = () => {
       <Spacer size="$12"></Spacer>
       <YStack width="80%">
         <StatRowTemplate
+          paywall={false}
           stats={{
             personalityType: "ENTP",
             iq: 42,
@@ -125,6 +126,7 @@ export const Paywall = () => {
         }}
       />
       <ScrollView
+        flex={1}
         ref={scrollView}
         onScroll={(e) => {
           const x = e.nativeEvent.contentOffset.x;
@@ -147,7 +149,7 @@ export const Paywall = () => {
         snapToInterval={width + gap}
         decelerationRate={0.85}
       >
-        <XStack px={padding} gap={gap}>
+        <XStack px={padding} gap={gap} paddingTop="$5">
           <Theme name="spotify">
             <WrappedContext.Provider value={{ width, height }}>
               {advertCards.map((card, i) => (
