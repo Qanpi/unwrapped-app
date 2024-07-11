@@ -60,35 +60,42 @@ const StatRow = ({ title, stat, blur }) => {
   );
 };
 
-type StatRowTemplateProps = { stats: Partial<PersonalStats>; paywall: boolean };
-export const StatRowTemplate = ({ stats, paywall }: StatRowTemplateProps) => {
+type StatRowTemplateProps = { stats: Partial<PersonalStats>; paywall?: boolean };
+export const StatRowTemplate = ({ stats, paywall=true }: StatRowTemplateProps) => {
   const template = [
     {
       title: "Personality type:",
       stat: stats.personalityType,
     },
+    {
+      title: "IQ:",
+      stat: stats.iq?.toFixed(1),
+    },
+    {
+      title: "Convos started:",
+      stat: stats.convosStarted,
+    },
+    {
+      title: "Convos killed:",
+      stat: stats.convosEnded,
+    },
+    {
+      title: "Response time:",
+      stat: stats.averageResponseTime
+        ? "~" + formatTime(stats.averageResponseTime)
+        : undefined,
+    },
+    {
+      title: "Screen time:",
+      stat: stats.screenTime ? "~" + formatTime(stats.screenTime) : undefined,
+    },
   ];
 
   return (
     <>
-      <StatRow
-        title="Personality type:"
-        stat={stats.personalityType}
-        blur={paywall}
-      ></StatRow>
-      <StatRow title="IQ:" stat={stats.iq.toFixed(1)}></StatRow>
-
-      <Spacer></Spacer>
-      <StatRow title="Convos started:" stat={stats.convosStarted}></StatRow>
-      <StatRow title="Convos killed:" stat={stats.convosEnded}></StatRow>
-      <StatRow
-        title="Response time:"
-        stat={"~" + formatTime(stats.averageResponseTime)}
-      ></StatRow>
-      <StatRow
-        title="Screen time:"
-        stat={"~" + formatTime(stats.screenTime)}
-      ></StatRow>
+      {template.map((row) => (
+        <StatRow title={row.title} stat={row.stat} blur={paywall}></StatRow>
+      ))}
     </>
   );
 };
