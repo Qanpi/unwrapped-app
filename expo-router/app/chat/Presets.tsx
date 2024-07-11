@@ -84,7 +84,7 @@ export const getCardPresets = (
               justifyContent="space-between"
               alignItems="center"
             >
-              <Paragraph color={i === 5 ? "$gray10" : "$color"}>{i !== 5 ? name : "Others"}</Paragraph>
+              <Paragraph opacity={i === 5 ? 0.75 : 1}>{i !== 5 ? name : "Others"}</Paragraph>
 
               <XStack alignItems="center" justifyContent="flex-end" gap="$2">
                 <Paragraph color="$background3" opacity={0.7} fontSize={11}>

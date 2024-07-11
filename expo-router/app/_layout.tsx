@@ -1,16 +1,16 @@
 import "../tamagui-web.css";
 
 import { useEffect } from "react";
-import { useColorScheme } from "react-native";
+import { TouchableOpacity, useColorScheme } from "react-native";
 import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { SplashScreen, Stack, useRouter } from "expo-router";
+import { Link, SplashScreen, Stack, useRouter } from "expo-router";
 import { Provider } from "./Provider";
-import { Share, Share2 } from "@tamagui/lucide-icons";
+import { Share, Share2, X } from "@tamagui/lucide-icons";
 import { ShareIntentProvider } from "expo-share-intent";
 
 export {
@@ -51,15 +51,17 @@ function RootLayoutNav() {
 
   const router = useRouter();
   return (
-    <ShareIntentProvider options={{
-      debug: true,
-      resetOnBackground: true,
-      onResetShareIntent: () => {
-        router.replace({
-          pathname: "/",
-        })
-      }
-    }}>
+    <ShareIntentProvider
+      options={{
+        debug: true,
+        resetOnBackground: true,
+        onResetShareIntent: () => {
+          router.replace({
+            pathname: "/",
+          });
+        },
+      }}
+    >
       <Provider>
         <ThemeProvider
           value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
@@ -82,6 +84,12 @@ function RootLayoutNav() {
             />
 
             <Stack.Screen name="chat/[name]" />
+            <Stack.Screen
+              name="paywall"
+              options={{
+                presentation: "modal",
+              }}
+            />
           </Stack>
         </ThemeProvider>
       </Provider>
