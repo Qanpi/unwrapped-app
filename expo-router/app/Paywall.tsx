@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef } from "react";
-import { ScrollView } from "react-native";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ScrollView, TouchableOpacity } from "react-native";
 import {
   Button,
   Paragraph,
@@ -16,6 +16,8 @@ import { BaseCard } from "./BaseCard";
 import { BigNumber, WH2 } from "./chat/presets";
 import { ChatListItem } from "./(tabs)";
 import { StatRowTemplate } from "./PersonalStats";
+import { Link, Stack } from "expo-router";
+import { X } from "@tamagui/lucide-icons";
 
 export const Paywall = () => {
   const scrollIndex = useRef(0);
@@ -95,16 +97,33 @@ export const Paywall = () => {
 
   const scrollWidth = width + gap;
 
+  const [skippable, setSkippable] = useState(false)
+
   const scrollToBeginning = () => {
     scrollView.current?.scrollTo({ x: scrollWidth, y: 0, animated: false });
+    setSkippable(true);
   };
 
   useEffect(() => {
     scrollToBeginning();
+    setSkippable(false);
   }, [scrollView]);
 
   return (
     <>
+      <Stack.Screen
+        options={{
+          headerBackVisible: false,
+          title: "Unlock premium",
+          headerRight: () => (
+            skippable ? <Link href="../" asChild>
+              <TouchableOpacity>
+                <X></X>
+              </TouchableOpacity>
+            </Link> : null
+          ),
+        }}
+      />
       <ScrollView
         ref={scrollView}
         onScroll={(e) => {
@@ -145,3 +164,5 @@ export const Paywall = () => {
     </>
   );
 };
+
+export default Paywall;

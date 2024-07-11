@@ -1,4 +1,5 @@
 import { HelpCircle } from "@tamagui/lucide-icons";
+import { useRouter } from "expo-router";
 import { TouchableOpacity } from "react-native";
 import {
   Button,
@@ -44,11 +45,13 @@ const StatRow = ({ title, stat, blur }) => {
       }
     : {};
 
+  const router = useRouter();
+
   return (
     <XStack justifyContent="space-between">
       <Paragraph>{title} </Paragraph>
 
-      <TouchableOpacity hitSlop={5} onPress={() => console.log("paywall")}>
+      <TouchableOpacity hitSlop={5} onPress={() => router.navigate("/paywall")}>
         <Paragraph userSelect={"none"} style={style}>
           {stat}
         </Paragraph>
