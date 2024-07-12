@@ -1,7 +1,8 @@
 import { FilePlus } from "@tamagui/lucide-icons";
-import WordCloud from "rn-wordcloud";
+import { zip, unzip, unzipAssets, subscribe } from "react-native-zip-archive";
 import * as DocumentPicker from "expo-document-picker";
 import { router, useRouter } from "expo-router";
+import * as FileSystem from "expo-file-system";
 import {
   Button,
   ListItem,
@@ -50,11 +51,41 @@ export default function ChatsScreen() {
   const { hasShareIntent, shareIntent } = useShareIntentContext();
 
   useEffect(() => {
+    const readZip = async (file) => {
+      const targetPath = FileSystem.cacheDirectory + "sample";
+      console.log(targetPath);
+
+      await unzip(file.path, targetPath, "UTF-8");
+
+      const entries = await FileSystem.readDirectoryAsync(
+        FileSystem.cacheDirectory + "sample"
+      );
+      console.log(entries)
+
+      try {
+        // const data = await new JSZip.external.Promise((resolve, reject) => {
+        //   JSZipUtils.getBinaryContent(file.path, (err, data) => {
+        //     if (err) {
+        //       reject(err);
+        //     } else {
+        //       resolve(data);
+        //     }
+        //   });
+        // });
+      } catch (e) {
+        console.error(e);
+        throw e;
+      }
+    };
+
     if (hasShareIntent) {
       // we want to handle share intent event in a specific page
       const file = shareIntent?.files?.[0];
+      console.log(file);
       if (file?.mimeType === "text/plain") {
         initializeChat(file.fileName, file.path);
+      } else if (file?.mimeType === "application/zip") {
+        readZip(file);
       }
     }
   }, [hasShareIntent]);
