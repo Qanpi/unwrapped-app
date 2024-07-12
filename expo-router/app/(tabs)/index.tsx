@@ -17,7 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useEffect } from "react";
-import { useShareIntentContext } from "expo-share-intent";
+import { ShareIntentFile, useShareIntentContext } from "expo-share-intent";
 
 export function ChatListItem({ name, lastUpdated, onPress }: { name: string }) {
   return (
@@ -51,50 +51,39 @@ export default function ChatsScreen() {
   const { hasShareIntent, shareIntent } = useShareIntentContext();
 
   useEffect(() => {
-    const readZip = async (file) => {
-      const targetPath = FileSystem.cacheDirectory + "sample";
-      console.log(targetPath);
-
-      await unzip(file.path, targetPath, "UTF-8");
-
-      const entries = await FileSystem.readDirectoryAsync(
-        FileSystem.cacheDirectory + "sample"
-      );
-      console.log(entries)
-
-      try {
-        // const data = await new JSZip.external.Promise((resolve, reject) => {
-        //   JSZipUtils.getBinaryContent(file.path, (err, data) => {
-        //     if (err) {
-        //       reject(err);
-        //     } else {
-        //       resolve(data);
-        //     }
-        //   });
-        // });
-      } catch (e) {
-        console.error(e);
-        throw e;
-      }
-    };
-
     if (hasShareIntent) {
       // we want to handle share intent event in a specific page
       const file = shareIntent?.files?.[0];
-      console.log(file);
-      if (file?.mimeType === "text/plain") {
-        initializeChat(file.fileName, file.path);
-      } else if (file?.mimeType === "application/zip") {
-        readZip(file);
+      if (!file) {
+        throw new Error("Could not open shared file.");
       }
+
+      openChat(file);
     }
   }, [hasShareIntent]);
 
-  const initializeChat = async (name, uri) => {
-    const key = name.replace(/WhatsApp Chat with /, "").replace(/.txt/, "");
+  const openChat = async (file: ShareIntentFile) => {
+    let uri, filename;
+
+    if (file.mimeType === "text/plain") {
+      uri = file.path;
+      filename = file.fileName;
+    } else if (file?.mimeType === "application/zip") {
+      const zipPath = FileSystem.cacheDirectory + file.fileName.replace(/.zip/, "");
+
+      await unzip(file.path, zipPath, "UTF-8");
+      const entries = await FileSystem.readDirectoryAsync(zipPath);
+
+      const chatLog = entries.find((e) => e.endsWith(".txt"));
+      uri = zipPath + "/" + chatLog;
+      filename = chatLog;
+    }
+
+    const key = filename 
+      .replace(/WhatsApp Chat with /, "")
+      .replace(/.txt/, "");
 
     await AsyncStorage.setItem(key, JSON.stringify({ uri }));
-
     router.navigate(`chat/${key}`);
   };
 
@@ -110,7 +99,7 @@ export default function ChatsScreen() {
     }
 
     const { uri, name } = res.assets[0];
-    initializeChat(name, uri);
+    openChat(name, uri);
   };
 
   useEffect(() => {

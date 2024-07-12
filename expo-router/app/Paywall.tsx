@@ -102,7 +102,6 @@ export const Paywall = () => {
 
   const scrollToBeginning = () => {
     scrollView.current?.scrollTo({ x: scrollWidth, y: 0, animated: false });
-    setSkippable(true);
   };
 
   useEffect(() => {
@@ -132,6 +131,10 @@ export const Paywall = () => {
           const x = e.nativeEvent.contentOffset.x;
           const index = Math.round(x / (width + gap));
           scrollIndex.current = index;
+
+          if (x >= 2 * scrollWidth - gap && !skippable) {
+            setSkippable(true)
+          }
 
           if (x >= (n + 1) * scrollWidth - gap / 3) {
             scrollToBeginning();
