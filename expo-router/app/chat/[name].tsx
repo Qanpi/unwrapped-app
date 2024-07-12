@@ -95,8 +95,7 @@ function WrappedCardList() {
       );
 
       if (res.status !== 200) {
-        console.log("status error");
-        return; //FIXME: throw error
+        throw new Error("Server failed to analyze chat.")
       }
 
       const parsed = JSON.parse(res.body);
@@ -124,17 +123,6 @@ function WrappedCardList() {
   };
 
   const handlePressShareEverything = async () => {
-    // if (await Sharing.isAvailableAsync()) {
-    //   await Sharing.shareAsync("file://" + uri, {
-    //     dialogTitle: "Share your Wrapped",
-    //     mimeType: "image/jpg",
-    //     UTI: ".jpg"
-    //   });
-    // } else {
-    //   //FIXME: show a toast
-    //   alert("Sharing is not available on this platform");
-    // }
-
     const urls: string[] = [];
 
     for (const card of cardRefs.current) {
