@@ -7756,6 +7756,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"immediate@npm:~3.0.5":
+  version: 3.0.6
+  resolution: "immediate@npm:3.0.6"
+  checksum: f9b3486477555997657f70318cc8d3416159f208bec4cca3ff3442fd266bc23f50f0c9bd8547e1371a6b5e82b821ec9a7044a4f7b944798b25aa3cc6d5e63e62
+  languageName: node
+  linkType: hard
+
 "import-fresh@npm:^2.0.0":
   version: 2.0.0
   resolution: "import-fresh@npm:2.0.0"
@@ -8561,6 +8568,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jszip-utils@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "jszip-utils@npm:0.1.0"
+  checksum: 4d75e2653be9336b7a0b2815c4c8ebb6a3ad442ed8e2fb56ab8fc4c2514e1b5d015e0bb74444b88082c91057b38505dfa3223f59aa265556780e438111cf2b96
+  languageName: node
+  linkType: hard
+
+"jszip@npm:^3.10.1":
+  version: 3.10.1
+  resolution: "jszip@npm:3.10.1"
+  dependencies:
+    lie: "npm:~3.3.0"
+    pako: "npm:~1.0.2"
+    readable-stream: "npm:~2.3.6"
+    setimmediate: "npm:^1.0.5"
+  checksum: bfbfbb9b0a27121330ac46ab9cdb3b4812433faa9ba4a54742c87ca441e31a6194ff70ae12acefa5fe25406c432290e68003900541d948a169b23d30c34dd984
+  languageName: node
+  linkType: hard
+
 "kind-of@npm:^6.0.2":
   version: 6.0.3
   resolution: "kind-of@npm:6.0.3"
@@ -8579,6 +8605,15 @@ __metadata:
   version: 3.1.0
   resolution: "leven@npm:3.1.0"
   checksum: 638401d534585261b6003db9d99afd244dfe82d75ddb6db5c0df412842d5ab30b2ef18de471aaec70fe69a46f17b4ae3c7f01d8a4e6580ef7adb9f4273ad1e55
+  languageName: node
+  linkType: hard
+
+"lie@npm:~3.3.0":
+  version: 3.3.0
+  resolution: "lie@npm:3.3.0"
+  dependencies:
+    immediate: "npm:~3.0.5"
+  checksum: f335ce67fe221af496185d7ce39c8321304adb701e122942c495f4f72dcee8803f9315ee572f5f8e8b08b9e8d7195da91b9fad776e8864746ba8b5e910adf76e
   languageName: node
   linkType: hard
 
@@ -9982,6 +10017,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pako@npm:~1.0.2":
+  version: 1.0.11
+  resolution: "pako@npm:1.0.11"
+  checksum: 1ad07210e894472685564c4d39a08717e84c2a68a70d3c1d9e657d32394ef1670e22972a433cbfe48976cb98b154ba06855dcd3fcfba77f60f1777634bec48c0
+  languageName: node
+  linkType: hard
+
 "parse-json@npm:^4.0.0":
   version: 4.0.0
   resolution: "parse-json@npm:4.0.0"
@@ -10703,6 +10745,16 @@ __metadata:
     react: ^18.0.0
     react-dom: ^18.0.0
   checksum: 6c326cc2fa07abcabfffcb99ea6df921c405402ead895ee4a142e8fdf55deda504fc4ce392bf50de9e6fe141a446ec2a93d8b872fcf079f10b92799fa9021732
+  languageName: node
+  linkType: hard
+
+"react-native-zip-archive@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "react-native-zip-archive@npm:7.0.0"
+  peerDependencies:
+    react: ">=16.8.6"
+    react-native: ">=0.60.0"
+  checksum: c928098e2bda71d13a5f68fb622bf7d5327208f9db90bc6aff9bf5d810730d98605260186c34562d02d1964fc49309fd67a7c9564c5f9e8fd9a00ce4b0bbffd6
   languageName: node
   linkType: hard
 
@@ -12573,6 +12625,8 @@ __metadata:
     expo-status-bar: "npm:^1.12.1"
     expo-system-ui: "npm:~3.0.4"
     expo-web-browser: "npm:~13.0.3"
+    jszip: "npm:^3.10.1"
+    jszip-utils: "npm:^0.1.0"
     lodash-es: "npm:^4.17.21"
     react: "npm:18.2.0"
     react-dom: "npm:18.2.0"
@@ -12585,6 +12639,7 @@ __metadata:
     react-native-svg: "npm:15.2.0"
     react-native-view-shot: "npm:3.8.0"
     react-native-web: "npm:^0.19.12"
+    react-native-zip-archive: "npm:^7.0.0"
     seedrandom: "npm:^3.0.5"
     tamagui: "npm:^1.101.4"
     typescript: "npm:~5.3.3"
