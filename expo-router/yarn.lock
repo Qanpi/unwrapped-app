@@ -2645,6 +2645,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@revenuecat/purchases-typescript-internal@npm:11.1.1":
+  version: 11.1.1
+  resolution: "@revenuecat/purchases-typescript-internal@npm:11.1.1"
+  checksum: 262e7690b8ccba431a4a8562274dc2da60599c16821e618eade4397a44168c0c9ac317d3ebb8d41eb86927c1cf8402a41308f547023fffe341b715b1782b5895
+  languageName: node
+  linkType: hard
+
 "@rnx-kit/chromium-edge-launcher@npm:^1.0.0":
   version: 1.0.0
   resolution: "@rnx-kit/chromium-edge-launcher@npm:1.0.0"
@@ -10613,6 +10620,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-purchases@npm:^7.28.1":
+  version: 7.28.1
+  resolution: "react-native-purchases@npm:7.28.1"
+  dependencies:
+    "@revenuecat/purchases-typescript-internal": "npm:11.1.1"
+  peerDependencies:
+    react: ">= 16.6.3"
+    react-native: "*"
+  checksum: 191fbd13b6538b5fb687a2afaa569d6eee600964ca38d8509ca74aa84a630c241bdd93df9799bb477a49fa96c59ea50241a46461cb5ef2e3f17b2196fc02dc35
+  languageName: node
+  linkType: hard
+
 "react-native-reanimated@npm:~3.10.1":
   version: 3.10.1
   resolution: "react-native-reanimated@npm:3.10.1"
@@ -12632,6 +12651,7 @@ __metadata:
     react-dom: "npm:18.2.0"
     react-native: "npm:0.74.3"
     react-native-gifted-chat: "npm:^2.4.0"
+    react-native-purchases: "npm:^7.28.1"
     react-native-reanimated: "npm:~3.10.1"
     react-native-safe-area-context: "npm:4.10.1"
     react-native-screens: "npm:~3.31.1"

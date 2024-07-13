@@ -1,14 +1,16 @@
 import { FilePlus } from "@tamagui/lucide-icons";
 import { zip, unzip, unzipAssets, subscribe } from "react-native-zip-archive";
 import * as DocumentPicker from "expo-document-picker";
-import { router, useRouter } from "expo-router";
+import { Link, router, useRouter } from "expo-router";
 import * as FileSystem from "expo-file-system";
 import {
   Button,
+  Image,
   ListItem,
   Paragraph,
   Popover,
   Text,
+  View,
   XStack,
   YGroup,
   YStack,
@@ -25,11 +27,7 @@ export function ChatListItem({ name, lastUpdated, onPress }: { name: string }) {
       <ListItem
         onPress={onPress ? onPress : undefined}
         pressTheme
-        title={
-          <Paragraph fontWeight="bold" color="$purple7">
-            {name}
-          </Paragraph>
-        }
+        title={<Paragraph fontWeight="bold">{name}</Paragraph>}
       >
         <ListItem.Subtitle>Last updated: {lastUpdated}</ListItem.Subtitle>
       </ListItem>
@@ -69,7 +67,8 @@ export default function ChatsScreen() {
       uri = file.path;
       filename = file.fileName;
     } else if (file?.mimeType === "application/zip") {
-      const zipPath = FileSystem.cacheDirectory + file.fileName.replace(/.zip/, "");
+      const zipPath =
+        FileSystem.cacheDirectory + file.fileName.replace(/.zip/, "");
 
       await unzip(file.path, zipPath, "UTF-8");
       const entries = await FileSystem.readDirectoryAsync(zipPath);
@@ -79,9 +78,7 @@ export default function ChatsScreen() {
       filename = chatLog;
     }
 
-    const key = filename 
-      .replace(/WhatsApp Chat with /, "")
-      .replace(/.txt/, "");
+    const key = filename.replace(/WhatsApp Chat with /, "").replace(/.txt/, "");
 
     await AsyncStorage.setItem(key, JSON.stringify({ uri }));
     router.navigate(`chat/${key}`);
@@ -127,31 +124,42 @@ export default function ChatsScreen() {
   });
 
   return (
-    <DefaultYStack>
-      <YStack width="100%">
-        <Button
-          justifyContent="flex-start"
-          variant="outlined"
-          chromeless
-          icon={FilePlus}
-          onPress={handlePressImport}
-        >
-          Import new chat
-        </Button>
-        <YGroup>
-          {chats?.map(([name, data]) => {
-            const parsed = JSON.parse(data);
-            return (
-              <ChatListItem
-                key={name}
-                name={name}
-                onPress={() => router.navigate(`chat/${name}`)}
-                lastUpdated={dayjs(parsed.lastAnalyzed).format("L")}
-              ></ChatListItem>
-            );
-          })}
-        </YGroup>
-      </YStack>
-    </DefaultYStack>
+    <YStack>
+      <Link href="/paywall" asChild>
+        <View minHeight={200}>
+          <Image
+            flex={1}
+            source={{
+              uri: require("../../assets/images/premium-banner.png"),
+            }}
+            objectFit="contain"
+            resizeMode="contain"
+          ></Image>
+        </View>
+      </Link>
+      <Button
+        justifyContent="flex-start"
+        variant="outlined"
+        chromeless
+        icon={FilePlus}
+        color="$purple8"
+        onPress={handlePressImport}
+      >
+        Import new chat
+      </Button>
+      <YGroup>
+        {chats?.map(([name, data]) => {
+          const parsed = JSON.parse(data);
+          return (
+            <ChatListItem
+              key={name}
+              name={name}
+              onPress={() => router.navigate(`chat/${name}`)}
+              lastUpdated={dayjs(parsed.lastAnalyzed).format("L")}
+            ></ChatListItem>
+          );
+        })}
+      </YGroup>
+    </YStack>
   );
 }
