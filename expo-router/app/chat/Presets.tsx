@@ -84,19 +84,20 @@ export const getCardPresets = (
               justifyContent="space-between"
               alignItems="center"
             >
-              <Paragraph opacity={i === 5 ? 0.75 : 1}>{i !== 5 ? name : "Others"}</Paragraph>
+              <Paragraph opacity={i === 5 ? 0.75 : 1}>
+                {i !== 5 ? name : "Others"}
+              </Paragraph>
 
-              <XStack alignItems="center" justifyContent="flex-end" gap="$2">
+              <XStack flex={1} alignItems="center" justifyContent="flex-end" gap="$2">
                 <Paragraph color="$background3" opacity={0.7} fontSize={11}>
                   {i !== 5 ? percentage : remainder}%
                 </Paragraph>
-                <View height="$1" width={percentage + "%"}>
-                  <Square
-                    flex={1}
-                    backgroundColor="$background3"
-                    borderRadius="$1"
-                  ></Square>
-                </View>
+                <View
+                  backgroundColor="$background3"
+                  borderRadius="$1"
+                  height="$1"
+                  width={percentage + "%"}
+                ></View>
               </XStack>
             </XStack>
           );

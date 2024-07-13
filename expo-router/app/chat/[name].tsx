@@ -67,6 +67,7 @@ function WrappedCardList() {
   const local = useLocalSearchParams();
   const chatKey = local.name as string;
 
+  const [status, setStatus] = useState("");
   const [data, setData] = useState(null);
 
   useEffect(() => {
@@ -76,6 +77,8 @@ function WrappedCardList() {
       const chatRaw = await AsyncStorage.getItem(chatKey as string);
       const chat = JSON.parse(chatRaw);
 
+      setStatus("Retrieving chat data...");
+
       // if previous analyzer, exit now
       //FIXME: date based way to determine when analyzed?
       if ("lastAnalyzed" in chat) {
@@ -84,6 +87,7 @@ function WrappedCardList() {
 
       const SERVER_URL = "http://192.168.10.163:7071";
 
+      setStatus("Analyzing conversations...");
       const res = await FileSystem.uploadAsync(
         `${SERVER_URL}/api/analyze`,
         chat.uri,
@@ -98,6 +102,7 @@ function WrappedCardList() {
         throw new Error("Server failed to analyze chat.")
       }
 
+      setStatus("Finalizing visualizations...");
       const parsed = JSON.parse(res.body);
       setData(parsed);
 
@@ -219,7 +224,7 @@ function WrappedCardList() {
           <XStack px={padding} gap={gap}>
             <Theme name="spotify">
               <WrappedContext.Provider value={{ width, height }}>
-                {getCardPresets(chatKey, data, width, height).map(
+                {getCardPresets("Chat with " + chatKey, data, width, height).map(
                   (card, i) => (
                     <card.type
                       {...card.props}
@@ -241,7 +246,7 @@ function WrappedCardList() {
           justifyContent="center"
           alignItems="center"
         >
-          <Paragraph>Analyzing your chat...</Paragraph>
+          <Paragraph>{status}</Paragraph>
           <Spinner></Spinner>
         </View>
       )}
