@@ -30,6 +30,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
 import { useToastController } from "@tamagui/toast";
 import { tokens } from "@tamagui/config/v3";
+import { TouchableOpacity } from "react-native";
 
 export function HeaderDropdown({ children }) {
   const toast = useToastController();
@@ -55,8 +56,10 @@ export default function TabLayout() {
       screenOptions={{
         headerTitle: (props) => <HeaderDropdown {...props}></HeaderDropdown>,
         headerRight: () => (
-          <Link href="/settings">
-            <Settings mr="$3"></Settings>
+          <Link href="/settings" asChild>
+            <TouchableOpacity>
+              <Settings mr="$3"></Settings>
+            </TouchableOpacity>
           </Link>
         ),
         tabBarActiveTintColor: theme.purple7.val,
