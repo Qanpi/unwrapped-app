@@ -96,7 +96,7 @@ export const getCardPresets = (
                   backgroundColor="$background3"
                   borderRadius="$1"
                   height="$1"
-                  width={percentage + "%"}
+                  width={(i === 5 ? remainder : percentage) + "%"}
                 ></View>
               </XStack>
             </XStack>
