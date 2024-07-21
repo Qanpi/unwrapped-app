@@ -8,6 +8,11 @@ import * as FileSystem from "expo-file-system";
 import { Link, useRouter } from "expo-router";
 import { ShareIntentFile, useShareIntentContext } from "expo-share-intent";
 import { useEffect } from "react";
+import {
+  AdEventType,
+  InterstitialAd,
+  TestIds,
+} from "react-native-google-mobile-ads";
 import { unzip } from "react-native-zip-archive";
 import {
   Button,
@@ -41,11 +46,29 @@ export function DefaultYStack({ children }) {
   );
 }
 
+const adUnitId = __DEV__
+  ? TestIds.INTERSTITIAL
+  : "ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyyyy";
+console.log(adUnitId, __DEV__);
+const interstitial = InterstitialAd.createForAdRequest(adUnitId, {});
+
 export default function ChatsScreen() {
   const router = useRouter();
 
-  const { hasShareIntent, shareIntent } = useShareIntentContext();
+  useEffect(() => {
+    const eventListener = interstitial.addAdEventListener(
+      AdEventType.CLOSED,
+      () => {
+        interstitial.load();
+      }
+    );
+    // Start loading the interstitial straight away
+    interstitial.load();
 
+    return eventListener;
+  }, []);
+
+  const { hasShareIntent, shareIntent } = useShareIntentContext();
   useEffect(() => {
     if (hasShareIntent) {
       // we want to handle share intent event in a specific page
@@ -162,7 +185,15 @@ export default function ChatsScreen() {
             <ChatListItem
               key={name}
               name={name}
-              onPress={() => router.navigate(`chat/${name}`)}
+              onPress={() => {
+                try {
+                  interstitial.show();
+                } catch (e) {
+                  //TODO: handle add hasn't loaded yet
+                  console.error(e);
+                }
+                router.navigate(`chat/${name}`);
+              }}
               lastUpdated={dayjs(parsed.lastAnalyzed).format("L")}
             ></ChatListItem>
           );
