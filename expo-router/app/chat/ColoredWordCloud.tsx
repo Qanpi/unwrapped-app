@@ -3,7 +3,7 @@ import WordCloud from "../../react-native-wordcloud";
 
 export const ColoredWordCloud = ({ words, width, height }) => {
   const minFont = 10;
-  const maxFont = 50;
+  const maxFont = 40;
   const fontOffset = 10;
 
   //asume sorted
