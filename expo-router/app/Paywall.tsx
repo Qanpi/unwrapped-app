@@ -14,7 +14,7 @@ import {
   YStack,
 } from "tamagui";
 import { ChatListItem } from "./(tabs)";
-import { BaseCard } from "./BaseCard";
+import { BaseCard } from "./chat/BaseCard";
 import { useWrappedCards, WrappedContext } from "./chat/[name]";
 import { BigNumber, WH2 } from "./chat/presets";
 import { StatRowTemplate } from "./chat/PersonalStats";

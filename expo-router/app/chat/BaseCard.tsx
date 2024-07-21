@@ -1,8 +1,8 @@
 import { forwardRef, useContext } from "react";
 import { type GetProps, Card, H4 } from "tamagui";
-import { WrappedContext } from "./chat/[name]";
-import { useCornerDecorations } from "./chat/Decoration";
-import { WaterMark } from "./WaterMark";
+import { WrappedContext } from "./[name]";
+import { useCornerDecorations } from "./Decoration";
+import { WaterMark } from "../WaterMark";
 
 type BaseCardProps = {
   index?: number;
