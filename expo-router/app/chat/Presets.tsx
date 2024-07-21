@@ -1,4 +1,4 @@
-import { BaseCard } from "app/BaseCard";
+import { BaseCard } from "./BaseCard";
 import { PersonalStats } from "./PersonalStats";
 import { WaterMark } from "app/WaterMark";
 import dayjs from "dayjs";
