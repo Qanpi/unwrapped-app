@@ -29,7 +29,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import localizedFormat from "dayjs/plugin/localizedFormat";
-import { TouchableOpacity } from "react-native";
+import { Modal, TouchableOpacity } from "react-native";
 import { getCardPresets } from "./presets";
 
 dayjs.extend(localizedFormat);
@@ -119,6 +119,8 @@ function WrappedCardList() {
     }
   };
 
+  const [isSharing, setIsSharing] = useState(false);
+
   const shareCapturedFiles = async (uris: string[]) => {
     //FIXME: handleError gracefully
     const response = await Share.open({
@@ -127,24 +129,30 @@ function WrappedCardList() {
     });
   };
 
-  const handlePressShareEverything = async () => {
+  const handlePressShare = async (single: boolean = false) => {
     const urls: string[] = [];
 
-    for (const card of cardRefs.current) {
-      try {
+    setIsSharing(true);
+
+    try {
+      for (const card of cardRefs.current) {
         const uri = await captureRef(card, {
           format: "jpg",
           quality: 0.8,
         });
 
         urls.push("file://" + uri);
-      } catch (e) {
-        //FIXME: handle gracefully
-        console.error(e);
+
+        if (single) break;
       }
+
+      await shareCapturedFiles(urls);
+    } catch (e) {
+      //FIXME: handle gracefully
+      console.error(e);
     }
 
-    shareCapturedFiles(urls);
+    setIsSharing(false);
   };
 
   const loading = !data;
@@ -260,16 +268,7 @@ function WrappedCardList() {
           height="100%"
           flexDirection="column"
           chromeless
-          onPress={async () => {
-            const uri = await captureRef(
-              cardRefs.current[scrollIndex.current],
-              {
-                format: "png",
-              }
-            );
-
-            shareCapturedFiles([uri]);
-          }}
+          onPress={() => handlePressShare(true)}
         >
           <Share2></Share2>
           This page
@@ -280,19 +279,28 @@ function WrappedCardList() {
           height="100%"
           chromeless
           flexDirection="column"
-          onPress={handlePressShareEverything}
+          onPress={() => handlePressShare()}
         >
           <ShareIcon></ShareIcon>
           Everything
         </Button>
       </XStack>
+      <Modal transparent visible={isSharing}>
+        <View
+          justifyContent="center"
+          alignItems="center"
+          flex={1}
+          backgroundColor="$gray1"
+          opacity={0.5}
+        ></View>
+      </Modal>
     </>
   );
 }
 
 function ChatScreen() {
   return (
-    <YStack flex={1} paddingTop="$5" alignItems="center">
+    <YStack flex={1} paddingTop="$5" gap="$3" alignItems="center">
       <WrappedCardList></WrappedCardList>
     </YStack>
   );
