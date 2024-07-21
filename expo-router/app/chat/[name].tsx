@@ -3,7 +3,7 @@ import {
   MoreHorizontal,
   Share2,
   Share as ShareIcon,
-  Trash2
+  Trash2,
 } from "@tamagui/lucide-icons";
 import * as FileSystem from "expo-file-system";
 import { router, Stack, useLocalSearchParams } from "expo-router";
@@ -19,7 +19,7 @@ import {
   useWindowDimensions,
   View,
   XStack,
-  YStack
+  YStack,
 } from "tamagui";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -67,7 +67,7 @@ function WrappedCardList() {
   const local = useLocalSearchParams();
   const chatKey = local.name as string;
 
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState("Initializing...");
   const [data, setData] = useState(null);
 
   useEffect(() => {
@@ -99,7 +99,7 @@ function WrappedCardList() {
       );
 
       if (res.status !== 200) {
-        throw new Error("Server failed to analyze chat.")
+        throw new Error("Server failed to analyze chat.");
       }
 
       setStatus("Finalizing visualizations...");
@@ -150,7 +150,7 @@ function WrappedCardList() {
   const loading = !data;
 
   const scrollIndex = useRef(0);
-  const {width, height, gap, padding} = useWrappedCards();
+  const { width, height, gap, padding } = useWrappedCards();
 
   const queryClient = useQueryClient();
 
@@ -224,17 +224,20 @@ function WrappedCardList() {
           <XStack px={padding} gap={gap}>
             <Theme name="spotify">
               <WrappedContext.Provider value={{ width, height }}>
-                {getCardPresets("Chat with " + chatKey, data, width, height).map(
-                  (card, i) => (
-                    <card.type
-                      {...card.props}
-                      index={i + 1}
-                      key={i}
-                      ref={(el) => assignCardRef(el, i)}
-                      seed={chatKey + i}
-                    ></card.type>
-                  )
-                )}
+                {getCardPresets(
+                  "Chat with " + chatKey,
+                  data,
+                  width,
+                  height
+                ).map((card, i) => (
+                  <card.type
+                    {...card.props}
+                    index={i + 1}
+                    key={i}
+                    ref={(el) => assignCardRef(el, i)}
+                    seed={chatKey + i}
+                  ></card.type>
+                ))}
               </WrappedContext.Provider>
             </Theme>
           </XStack>
@@ -250,8 +253,10 @@ function WrappedCardList() {
           <Spinner></Spinner>
         </View>
       )}
-      <XStack height="$10">
+      <XStack height="$8">
         <Button
+          disabled={loading}
+          opacity={loading ? 0.5 : 1}
           height="100%"
           flexDirection="column"
           chromeless
@@ -267,16 +272,18 @@ function WrappedCardList() {
           }}
         >
           <Share2></Share2>
-          <Paragraph>This page</Paragraph>
+          This page
         </Button>
         <Button
+          disabled={loading}
+          opacity={loading ? 0.5 : 1}
           height="100%"
           chromeless
           flexDirection="column"
           onPress={handlePressShareEverything}
         >
           <ShareIcon></ShareIcon>
-          <Paragraph>Everything</Paragraph>
+          Everything
         </Button>
       </XStack>
     </>
