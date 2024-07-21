@@ -1,7 +1,8 @@
 import { useAssets } from "expo-asset";
-import { ReactNode, useMemo } from "react";
+import { ReactNode, useContext, useMemo } from "react";
 import { Image } from "tamagui";
 import seedrandom from "seedrandom";
+import { AssetContext } from "app/Provider";
 
 export function Decoration({ asset, x, y, size = 150 }) {
   const angle = Math.floor(Math.random() * 360);
@@ -38,66 +39,44 @@ export const useCornerDecorations = (
   count: number,
   seed?: string
 ) => {
-  //order is chosen so that at least one 3D rainbow element is present
-  const assetSources = [
-    require(`../../assets/images/decorations/cloud.png`), //3D
-    require(`../../assets/images/decorations/red.png`),
-    require(`../../assets/images/decorations/metal.png`),
-    require(`../../assets/images/decorations/stripe.png`),
-    require(`../../assets/images/decorations/flower.png`), //3D
-    require(`../../assets/images/decorations/spill.png`),
-    require(`../../assets/images/decorations/signature.png`),
-    require(`../../assets/images/decorations/palm.png`),
-  ];
-  const DECORATION_COUNT = assetSources.length;
+  const assets = useContext(AssetContext);
 
-  //FIXME: handle errors
-  const [assets, errors] = useAssets(assetSources);
+  if (!assets) return [];
+  const DECORATION_COUNT = assets.length;
 
-  const decorations = useMemo(() => {
-    if (!assets) return [];
+  if (seed) seedrandom(seed, { global: true });
+  //TODO: match order across cards?
+  const randomAssetId = Math.floor(Math.random() * DECORATION_COUNT);
+  const decorations: ReactNode[] = [];
 
-    if (seed) seedrandom(seed, { global: true });
-    //TODO: match order across cards?
-    const randomAssetId = Math.floor(Math.random() * DECORATION_COUNT);
+  //TODO: add RNG seeding
+  for (let i = 0; i < count; i++) {
+    const columns = 6;
+    const rows = 8;
 
-    const decorations: ReactNode[] = [];
+    const column = Math.floor(width / columns);
+    const row = Math.floor(height / rows);
 
-    //TODO: add RNG seeding
-    for (let i = 0; i < count; i++) {
-      const columns = 6;
-      const rows = 8;
+    const inset = 20;
+    const minX = clamp((i % 2) * column * (columns - 1), inset, width - inset);
+    const minY = clamp(
+      Math.floor(i / 2) * row * (rows - 1),
+      inset,
+      height - inset
+    );
 
-      const column = Math.floor(width / columns);
-      const row = Math.floor(height / rows);
+    const maxX = minX + column;
+    const maxY = minY + row;
 
-      const inset = 20;
-      const minX = clamp(
-        (i % 2) * column * (columns - 1),
-        inset,
-        width - inset
-      );
-      const minY = clamp(
-        Math.floor(i / 2) * row * (rows - 1),
-        inset,
-        height - inset
-      );
-
-      const maxX = minX + column;
-      const maxY = minY + row;
-
-      decorations.push(
-        <Decoration
-          key={i}
-          asset={assets[(randomAssetId + i) % DECORATION_COUNT]}
-          x={Math.random() * (maxX - minX) + minX}
-          y={Math.random() * (maxY - minY) + minY}
-        ></Decoration>
-      );
-    }
-
-    return decorations;
-  }, [assets]);
+    decorations.push(
+      <Decoration
+        key={i}
+        asset={assets[(randomAssetId + i) % DECORATION_COUNT]}
+        x={Math.random() * (maxX - minX) + minX}
+        y={Math.random() * (maxY - minY) + minY}
+      ></Decoration>
+    );
+  }
 
   return decorations;
 };
