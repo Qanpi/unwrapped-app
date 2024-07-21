@@ -1,25 +1,23 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FilePlus } from "@tamagui/lucide-icons";
-import { zip, unzip, unzipAssets, subscribe } from "react-native-zip-archive";
+import { useQuery } from "@tanstack/react-query";
+import { checkPremiumAccess, usePremium } from "app/paywall";
+import dayjs from "dayjs";
 import * as DocumentPicker from "expo-document-picker";
-import { Link, router, useRouter } from "expo-router";
 import * as FileSystem from "expo-file-system";
+import { Link, useRouter } from "expo-router";
+import { ShareIntentFile, useShareIntentContext } from "expo-share-intent";
+import { useEffect } from "react";
+import { unzip } from "react-native-zip-archive";
 import {
   Button,
   Image,
   ListItem,
   Paragraph,
-  Popover,
-  Text,
   View,
-  XStack,
   YGroup,
   YStack,
 } from "tamagui";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useQuery } from "@tanstack/react-query";
-import dayjs from "dayjs";
-import { useEffect } from "react";
-import { ShareIntentFile, useShareIntentContext } from "expo-share-intent";
 
 export function ChatListItem({ name, lastUpdated, onPress }: { name: string }) {
   return (
@@ -123,8 +121,12 @@ export default function ChatsScreen() {
     },
   });
 
-  return (
-    <YStack>
+  function PremiumBanner() {
+    const isPremium = usePremium();
+
+    return isPremium !== false ? (
+      <></>
+    ) : (
       <Link href="/paywall" asChild>
         <View minHeight={200}>
           <Image
@@ -137,6 +139,12 @@ export default function ChatsScreen() {
           ></Image>
         </View>
       </Link>
+    );
+  }
+
+  return (
+    <YStack>
+      {PremiumBanner()}
       <Button
         justifyContent="flex-start"
         variant="outlined"

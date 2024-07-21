@@ -1,7 +1,7 @@
 import "../tamagui-web.css";
 
 import { useEffect } from "react";
-import { TouchableOpacity, useColorScheme } from "react-native";
+import { Platform, TouchableOpacity, useColorScheme } from "react-native";
 import {
   DarkTheme,
   DefaultTheme,
@@ -12,6 +12,7 @@ import { Link, SplashScreen, Stack, useRouter } from "expo-router";
 import { Provider } from "./Provider";
 import { Share, Share2, X } from "@tamagui/lucide-icons";
 import { ShareIntentProvider } from "expo-share-intent";
+import Purchases, { LOG_LEVEL } from "react-native-purchases";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -46,14 +47,31 @@ export default function RootLayout() {
   return <RootLayoutNav />;
 }
 
+const useRevenueCat = () => {
+  useEffect(() => {
+    Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
+
+    if (Platform.OS === "ios") {
+      //  Purchases.configure({apiKey: });
+      throw new Error("IOS not yet supported.");
+    } else if (Platform.OS === "android") {
+      Purchases.configure({
+        apiKey: process.env.EXPO_PUBLIC_RC_GOOGLE_API_KEY,
+      });
+    }
+  }, []);
+};
+
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
-
   const router = useRouter();
+
+  useRevenueCat();
+
   return (
     <ShareIntentProvider
       options={{
-        debug: true,
+        // debug: true,
         resetOnBackground: true,
         onResetShareIntent: () => {
           router.replace({
