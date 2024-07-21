@@ -16,6 +16,14 @@ import {
 } from "expo-share-intent";
 import { createContext } from "react";
 import { Asset, useAssets } from "expo-asset";
+import mobileAds from 'react-native-google-mobile-ads';
+
+mobileAds()
+  .initialize()
+  .then(adapterStatuses => {
+    // Initialization complete!
+    console.log("initialized ads successfully")
+  });
 
 const queryClient = new QueryClient();
 

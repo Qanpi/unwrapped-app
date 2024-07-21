@@ -35,12 +35,24 @@
       "expo-font",
       "expo-asset",
       "expo-document-picker",
-      ["expo-share-intent", {
-        "iosActivationRules": {
+      [
+        "expo-share-intent",
+        {
+          "iosActivationRules": {
             "NSExtensionActivationSupportsFileWithMaxCount": 1
           },
-          "androidIntentFilters": ["*/*"]
-      }]
+          "androidIntentFilters": [
+            "*/*"
+          ]
+        }
+      ],
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-7645417253321075~9323994393",
+          "iosAppId": "ca-app-pub-7645417253321075~9323994393"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
