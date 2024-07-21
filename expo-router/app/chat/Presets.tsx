@@ -1,5 +1,5 @@
 import { BaseCard } from "app/BaseCard";
-import { PersonalStats } from "app/PersonalStats";
+import { PersonalStats } from "./PersonalStats";
 import { WaterMark } from "app/WaterMark";
 import dayjs from "dayjs";
 import {
