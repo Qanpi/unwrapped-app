@@ -76,6 +76,45 @@ const StatRow = ({ title, stat, blur }) => {
   );
 };
 
+const template = [
+  {
+    title: "Personality type",
+    info: "Four letters according to the Myers-Briggs Type Indicator (MBTI), as determined by a neural network based on the user's chat history.",
+    getter: (stats) => {
+      return stats.personalityType;
+    },
+  },
+  {
+    title: "IQ",
+    info: "Estimated based on the uniqueness of the user's words, relative to other members.",
+    getter: (stats) => stats.iq?.toFixed(1),
+  },
+  {
+    title: "Convos started",
+    info: "A conversation is started when a user sends the first message in a 30-minute window.",
+    getter: (stats) => stats.convosStarted,
+  },
+  {
+    title: "Convos killed",
+    info: "A conversation is killed when a user receives no response to their message for 30 minutes.",
+    getter: (stats) => stats.convosEnded,
+  },
+  {
+    title: "Response time",
+    info: "The average time it takes for the user to respond to a message.",
+    getter: (stats) =>
+      stats.averageResponseTime
+        ? "~" + formatTime(stats.averageResponseTime)
+        : undefined,
+  },
+  {
+    title: "Screen time",
+    info: "The average time the user spends in the chat per day.",
+    getter: (stats) =>
+      stats.screenTime ? "~" + formatTime(stats.screenTime) : undefined,
+  },
+];
+
 type StatRowTemplateProps = {
   stats: Partial<PersonalStats>;
   paywall?: boolean;
@@ -84,39 +123,14 @@ export const StatRowTemplate = ({
   stats,
   paywall = true,
 }: StatRowTemplateProps) => {
-  const template = [
-    {
-      title: "Personality type:",
-      stat: stats.personalityType,
-    },
-    {
-      title: "IQ:",
-      stat: stats.iq?.toFixed(1),
-    },
-    {
-      title: "Convos started:",
-      stat: stats.convosStarted,
-    },
-    {
-      title: "Convos killed:",
-      stat: stats.convosEnded,
-    },
-    {
-      title: "Response time:",
-      stat: stats.averageResponseTime
-        ? "~" + formatTime(stats.averageResponseTime)
-        : undefined,
-    },
-    {
-      title: "Screen time:",
-      stat: stats.screenTime ? "~" + formatTime(stats.screenTime) : undefined,
-    },
-  ];
-
   return (
     <>
       {template.map((row) => (
-        <StatRow title={row.title} stat={row.stat} blur={paywall}></StatRow>
+        <StatRow
+          title={row.title + ": "}
+          stat={row.getter(stats)}
+          blur={paywall}
+        ></StatRow>
       ))}
     </>
   );
@@ -180,11 +194,15 @@ export const PersonalStats = ({
         >
           <Popover.Arrow borderWidth={1} borderColor="$borderColor" />
 
-          <YStack>
-            <View>
-              <H6>Personality type</H6>
-              <Paragraph>how this is calculated</Paragraph>
-            </View>
+          <YStack gap="$4">
+            {template.map((r) => {
+              return (
+                <View>
+                  <H6 color="$purple8">{r.title}</H6>
+                  <Paragraph>{r.info}</Paragraph>
+                </View>
+              );
+            })}
           </YStack>
         </Popover.Content>
       </Popover>
