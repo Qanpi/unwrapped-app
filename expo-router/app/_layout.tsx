@@ -27,6 +27,17 @@ export const unstable_settings = {
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
+Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
+
+if (Platform.OS === "ios") {
+  //  Purchases.configure({apiKey: });
+  throw new Error("IOS not yet supported.");
+} else if (Platform.OS === "android") {
+  Purchases.configure({
+    apiKey: process.env.EXPO_PUBLIC_RC_GOOGLE_API_KEY,
+  });
+}
+
 export default function RootLayout() {
   const [interLoaded, interError] = useFonts({
     Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
@@ -47,26 +58,9 @@ export default function RootLayout() {
   return <RootLayoutNav />;
 }
 
-const useRevenueCat = () => {
-  useEffect(() => {
-    Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
-
-    if (Platform.OS === "ios") {
-      //  Purchases.configure({apiKey: });
-      throw new Error("IOS not yet supported.");
-    } else if (Platform.OS === "android") {
-      Purchases.configure({
-        apiKey: process.env.EXPO_PUBLIC_RC_GOOGLE_API_KEY,
-      });
-    }
-  }, []);
-};
-
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
   const router = useRouter();
-
-  useRevenueCat();
 
   return (
     <ShareIntentProvider

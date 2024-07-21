@@ -37,6 +37,7 @@ import {
   InterstitialAd,
   TestIds,
 } from "react-native-google-mobile-ads";
+import { usePremium } from "app/paywall";
 
 dayjs.extend(localizedFormat);
 dayjs.extend(customParseFormat);
@@ -68,12 +69,6 @@ export const useWrappedCards = () => {
 
   return { width, height, gap, padding };
 };
-
-// const adUnitId = __DEV__
-//   ? TestIds.INTERSTITIAL
-//   : "ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyyyy";
-
-// const interstitial = InterstitialAd.createForAdRequest(adUnitId, {});
 
 function WrappedCardList() {
   const local = useLocalSearchParams();
@@ -143,6 +138,7 @@ function WrappedCardList() {
     }
   };
 
+  const isPremium = usePremium();
   const interstitial = useInterstitial();
 
   const takeScreenShot = async (single: boolean = false) => {
@@ -295,16 +291,20 @@ function WrappedCardList() {
           chromeless
           flexDirection="column"
           onPress={async () => {
-            interstitial.show();
             const urls = takeScreenShot();
 
-            const unsubscribe = interstitial.addAdEventListener(
-              AdEventType.CLOSED,
-              async () => {
-                await shareCapturedFiles(await urls);
-                unsubscribe();
-              }
-            );
+            if (isPremium === false) {
+              interstitial.show();
+              const unsubscribe = interstitial.addAdEventListener(
+                AdEventType.CLOSED,
+                async () => {
+                  await shareCapturedFiles(await urls);
+                  unsubscribe();
+                }
+              );
+            } else {
+              await shareCapturedFiles(await urls);
+            }
           }}
         >
           <ShareIcon></ShareIcon>
