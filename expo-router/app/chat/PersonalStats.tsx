@@ -1,4 +1,5 @@
 import { HelpCircle } from "@tamagui/lucide-icons";
+import { usePremium } from "app/paywall";
 import { useRouter } from "expo-router";
 import { TouchableOpacity } from "react-native";
 import {
@@ -24,7 +25,11 @@ function formatTime(seconds) {
     return `${hrs}h ${mins}min`;
   }
 
-  return `${mins}min ${secs}sec`;
+  if (mins > 0) {
+    return `${mins}min ${secs}sec`;
+  }
+
+  return `${secs}sec`;
 }
 
 const StatRow = ({ title, stat, blur }) => {
@@ -47,21 +52,38 @@ const StatRow = ({ title, stat, blur }) => {
 
   const router = useRouter();
 
+  const statParagraph = (
+    <Paragraph userSelect={"none"} style={style}>
+      {stat}
+    </Paragraph>
+  );
+
   return (
     <XStack justifyContent="space-between">
       <Paragraph>{title} </Paragraph>
 
-      <TouchableOpacity hitSlop={5} onPress={() => router.navigate("/paywall")}>
-        <Paragraph userSelect={"none"} style={style}>
-          {stat}
-        </Paragraph>
-      </TouchableOpacity>
+      {!blur ? (
+        statParagraph
+      ) : (
+        <TouchableOpacity
+          hitSlop={5}
+          onPress={() => router.navigate("/paywall")}
+        >
+          {statParagraph}
+        </TouchableOpacity>
+      )}
     </XStack>
   );
 };
 
-type StatRowTemplateProps = { stats: Partial<PersonalStats>; paywall?: boolean };
-export const StatRowTemplate = ({ stats, paywall=true }: StatRowTemplateProps) => {
+type StatRowTemplateProps = {
+  stats: Partial<PersonalStats>;
+  paywall?: boolean;
+};
+export const StatRowTemplate = ({
+  stats,
+  paywall = true,
+}: StatRowTemplateProps) => {
   const template = [
     {
       title: "Personality type:",
@@ -169,6 +191,8 @@ export const PersonalStats = ({
     );
   };
 
+  const isPremium = usePremium();
+
   return (
     <>
       <H1 fontSize={100} lineHeight={150} mb="$-4" mt="$-10">
@@ -183,7 +207,10 @@ export const PersonalStats = ({
       ) : null}
       <Spacer></Spacer>
       <YStack width="80%">
-        <StatRowTemplate stats={stats}></StatRowTemplate>
+        <StatRowTemplate
+          stats={stats}
+          paywall={!(isPremium === true)}
+        ></StatRowTemplate>
         <InfoTooltip></InfoTooltip>
       </YStack>
     </>
