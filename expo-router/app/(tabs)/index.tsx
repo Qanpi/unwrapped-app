@@ -45,28 +45,34 @@ export function DefaultYStack({ children }) {
     </YStack>
   );
 }
-
 const adUnitId = __DEV__
   ? TestIds.INTERSTITIAL
   : "ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyyyy";
-console.log(adUnitId, __DEV__);
+
 const interstitial = InterstitialAd.createForAdRequest(adUnitId, {});
 
-export default function ChatsScreen() {
-  const router = useRouter();
-
+export const useInterstitial = () => {
   useEffect(() => {
-    const eventListener = interstitial.addAdEventListener(
-      AdEventType.CLOSED,
-      () => {
-        interstitial.load();
+    const unsubscribe = interstitial.addAdEventsListener(
+      ({ type, payload }) => {
+        if (type === AdEventType.CLOSED) {
+          interstitial.load();
+        }
       }
     );
     // Start loading the interstitial straight away
     interstitial.load();
 
-    return eventListener;
+    return unsubscribe;
   }, []);
+
+  return interstitial;
+};
+
+export default function ChatsScreen() {
+  const router = useRouter();
+
+  const interstitial = useInterstitial();
 
   const { hasShareIntent, shareIntent } = useShareIntentContext();
   useEffect(() => {

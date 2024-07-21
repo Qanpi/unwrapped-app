@@ -31,7 +31,12 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import { Modal, TouchableOpacity } from "react-native";
 import { getCardPresets } from "./presets";
-import { InterstitialAd, TestIds } from "react-native-google-mobile-ads";
+import { useInterstitial } from "app/(tabs)";
+import {
+  AdEventType,
+  InterstitialAd,
+  TestIds,
+} from "react-native-google-mobile-ads";
 
 dayjs.extend(localizedFormat);
 dayjs.extend(customParseFormat);
@@ -63,6 +68,12 @@ export const useWrappedCards = () => {
 
   return { width, height, gap, padding };
 };
+
+// const adUnitId = __DEV__
+//   ? TestIds.INTERSTITIAL
+//   : "ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyyyy";
+
+// const interstitial = InterstitialAd.createForAdRequest(adUnitId, {});
 
 function WrappedCardList() {
   const local = useLocalSearchParams();
@@ -120,20 +131,22 @@ function WrappedCardList() {
     }
   };
 
-  const [isSharing, setIsSharing] = useState(false);
-
   const shareCapturedFiles = async (uris: string[]) => {
     //FIXME: handleError gracefully
-    const response = await Share.open({
-      type: "image/*",
-      urls: uris,
-    });
+    try {
+      const response = await Share.open({
+        type: "image/*",
+        urls: uris,
+      });
+    } catch (e) {
+      console.error(e);
+    }
   };
 
-  const handlePressShare = async (single: boolean = false) => {
-    const urls: string[] = [];
+  const interstitial = useInterstitial();
 
-    setIsSharing(true);
+  const takeScreenShot = async (single: boolean = false) => {
+    const urls: string[] = [];
 
     try {
       for (const card of cardRefs.current) {
@@ -146,14 +159,12 @@ function WrappedCardList() {
 
         if (single) break;
       }
-
-      await shareCapturedFiles(urls);
     } catch (e) {
       //FIXME: handle gracefully
       console.error(e);
     }
 
-    setIsSharing(false);
+    return urls;
   };
 
   const loading = !data;
@@ -269,7 +280,10 @@ function WrappedCardList() {
           height="100%"
           flexDirection="column"
           chromeless
-          onPress={() => handlePressShare(true)}
+          onPress={async () => {
+            const urls = await takeScreenShot(true);
+            shareCapturedFiles(urls);
+          }}
         >
           <Share2></Share2>
           This page
@@ -280,21 +294,23 @@ function WrappedCardList() {
           height="100%"
           chromeless
           flexDirection="column"
-          onPress={() => handlePressShare()}
+          onPress={async () => {
+            interstitial.show();
+            const urls = takeScreenShot();
+
+            const unsubscribe = interstitial.addAdEventListener(
+              AdEventType.CLOSED,
+              async () => {
+                await shareCapturedFiles(await urls);
+                unsubscribe();
+              }
+            );
+          }}
         >
           <ShareIcon></ShareIcon>
           Everything
         </Button>
       </XStack>
-      <Modal transparent visible={isSharing}>
-        <View
-          justifyContent="center"
-          alignItems="center"
-          flex={1}
-          backgroundColor="$gray1"
-          opacity={0.5}
-        ></View>
-      </Modal>
     </>
   );
 }
