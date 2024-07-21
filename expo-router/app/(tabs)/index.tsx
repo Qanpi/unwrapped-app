@@ -72,6 +72,7 @@ export const useInterstitial = () => {
 export default function ChatsScreen() {
   const router = useRouter();
 
+  const isPremium = usePremium();
   const interstitial = useInterstitial();
 
   const { hasShareIntent, shareIntent } = useShareIntentContext();
@@ -153,9 +154,7 @@ export default function ChatsScreen() {
   function PremiumBanner() {
     const isPremium = usePremium();
 
-    return isPremium !== false ? (
-      <></>
-    ) : (
+    return isPremium === false ? (
       <Link href="/paywall" asChild>
         <View minHeight={200}>
           <Image
@@ -168,12 +167,14 @@ export default function ChatsScreen() {
           ></Image>
         </View>
       </Link>
+    ) : (
+      <></>
     );
   }
 
   return (
     <YStack>
-      {PremiumBanner()}
+      <PremiumBanner></PremiumBanner>
       <Button
         justifyContent="flex-start"
         variant="outlined"
@@ -193,7 +194,7 @@ export default function ChatsScreen() {
               name={name}
               onPress={() => {
                 try {
-                  interstitial.show();
+                  if (isPremium === false) interstitial.show();
                 } catch (e) {
                   //TODO: handle add hasn't loaded yet
                   console.error(e);

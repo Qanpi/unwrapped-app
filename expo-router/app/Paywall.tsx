@@ -1,8 +1,8 @@
 import { X } from "@tamagui/lucide-icons";
-import { Link, Stack } from "expo-router";
+import { Link, Stack, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { ScrollView, TouchableOpacity } from "react-native";
-import Purchases, { PurchasesPackage } from "react-native-purchases";
+import Purchases, { LOG_LEVEL, PurchasesPackage } from "react-native-purchases";
 import {
   Button,
   Paragraph,
@@ -29,6 +29,7 @@ export const checkPremiumAccess = async () => {
     }
   } catch (e) {
     // Error fetching customer info
+    console.error(e)
   }
 
   return false;
@@ -37,21 +38,32 @@ export const checkPremiumAccess = async () => {
 export const usePremium = () => {
   //undefined means hasn't loaded yet
   const [isPremium, setIsPremium] = useState<boolean | undefined>();
+  const [force, setForce] = useState(0); 
 
   useEffect(() => {
-    const check = (async () => {
+    const check = async () => {
       const premium = await checkPremiumAccess();
       setIsPremium(premium);
-    });
+    };
 
     check();
-  }, []);
+
+    const forceRender = () => {
+      setForce(i => i+ 1);
+    }
+    Purchases.addCustomerInfoUpdateListener(forceRender);
+
+    return () => {
+      Purchases.removeCustomerInfoUpdateListener(forceRender);
+    }
+  }, [force]);
 
   return isPremium;
 };
 
 export const Paywall = () => {
   const scrollIndex = useRef(0);
+  const router = useRouter();
 
   const { width, height, gap, padding } = useWrappedCards();
 
@@ -62,8 +74,9 @@ export const Paywall = () => {
       const { customerInfo } = await Purchases.purchasePackage(
         lifetimePackage!
       );
+
       if (await checkPremiumAccess()) {
-        console.log("premium unlcoked");
+        router.navigate("../");
       }
     } catch (e) {
       //FIXME: error taost
@@ -99,7 +112,7 @@ export const Paywall = () => {
       justifyContent="flex-start"
       paddingTop={100}
     >
-      <WH2 color="black">Unlimited conversations</WH2>
+      <WH2 color="black">Unlimited Ad-free analyses</WH2>
       <Spacer></Spacer>
       <YGroup gap="$-1" backgroundColor="$background">
         <ChatListItem name="Friends"></ChatListItem>
