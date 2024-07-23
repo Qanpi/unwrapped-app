@@ -16,7 +16,7 @@ import {
 import { ChatListItem } from "./(tabs)";
 import { BaseCard } from "./chat/BaseCard";
 import { useWrappedCards, WrappedContext } from "./chat/[name]";
-import { BigNumber, WH2 } from "./chat/presets";
+import { BigNumber, WH2 } from "./chat/Presets";
 import { StatRowTemplate } from "./chat/PersonalStats";
 
 export const checkPremiumAccess = async () => {

@@ -1,5 +1,5 @@
 import { HelpCircle } from "@tamagui/lucide-icons";
-import { usePremium } from "app/paywall";
+import { usePremium } from "../paywall";
 import { useRouter } from "expo-router";
 import { TouchableOpacity } from "react-native";
 import {
