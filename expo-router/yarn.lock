@@ -2108,16 +2108,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native-community/blur@npm:^4.4.0":
-  version: 4.4.0
-  resolution: "@react-native-community/blur@npm:4.4.0"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-  checksum: 73083ea3a52431f45565bcc4aabacc46d1d2ef20250b67604f1f658841c702fbb53ec890404d052f6bba33738e47f0717a5b83c93e663d18b543b3151c986ee2
-  languageName: node
-  linkType: hard
-
 "@react-native-community/cli-clean@npm:13.6.9":
   version: 13.6.9
   resolution: "@react-native-community/cli-clean@npm:13.6.9"
@@ -12666,7 +12656,6 @@ __metadata:
     "@expo/metro-config": "npm:~0.18.4"
     "@expo/metro-runtime": "npm:~3.2.1"
     "@react-native-async-storage/async-storage": "npm:1.23.1"
-    "@react-native-community/blur": "npm:^4.4.0"
     "@react-navigation/native": "npm:^6.1.17"
     "@tamagui/babel-plugin": "npm:^1.101.4"
     "@tamagui/config": "npm:^1.101.4"

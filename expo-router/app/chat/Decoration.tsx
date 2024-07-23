@@ -1,8 +1,7 @@
-import { useAssets } from "expo-asset";
-import { ReactNode, useContext, useMemo } from "react";
-import { Image } from "tamagui";
-import seedrandom from "seedrandom";
 import { AssetContext } from "app/Provider";
+import { ReactNode, useContext } from "react";
+import seedrandom from "seedrandom";
+import { Image } from "tamagui";
 
 export function Decoration({ asset, x, y, size = 150 }) {
   const angle = Math.floor(Math.random() * 360);

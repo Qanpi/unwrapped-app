@@ -30,14 +30,14 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import { Modal, TouchableOpacity } from "react-native";
-import { getCardPresets } from "./presets";
+import { getCardPresets } from "./Presets";
 import { useInterstitial } from "app/(tabs)";
 import {
   AdEventType,
   InterstitialAd,
   TestIds,
 } from "react-native-google-mobile-ads";
-import { usePremium } from "app/paywall";
+import { usePremium } from "../paywall";
 
 dayjs.extend(localizedFormat);
 dayjs.extend(customParseFormat);
