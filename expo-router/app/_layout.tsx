@@ -1,18 +1,13 @@
 import "../tamagui-web.css";
 
-import { useEffect } from "react";
-import { Platform, TouchableOpacity, useColorScheme } from "react-native";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
+import { DarkTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Link, SplashScreen, Stack, useRouter } from "expo-router";
-import { Provider } from "./Provider";
-import { Share, Share2, X } from "@tamagui/lucide-icons";
+import { SplashScreen, Stack, useRouter } from "expo-router";
 import { ShareIntentProvider } from "expo-share-intent";
+import { useEffect } from "react";
+import { Platform, useColorScheme } from "react-native";
 import Purchases, { LOG_LEVEL } from "react-native-purchases";
+import { Provider } from "./Provider";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -75,9 +70,7 @@ function RootLayoutNav() {
       }}
     >
       <Provider>
-        <ThemeProvider
-          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-        >
+        <ThemeProvider value={DarkTheme}>
           <Stack>
             <Stack.Screen
               name="(tabs)"

@@ -311,10 +311,9 @@ export const themes = {
         background3: colorTokens.backgrounds.azure,
         background4: colorTokens.backgrounds.mint,
         background5: colorTokens.backgrounds.red,
-
     }
 }
 
-// if (process.env.NODE_ENV === 'development') {
-//   console.log(JSON.stringify(themes).length)
-// }
+if (process.env.NODE_ENV === 'development') {
+    console.log(JSON.stringify(themes).length)
+}

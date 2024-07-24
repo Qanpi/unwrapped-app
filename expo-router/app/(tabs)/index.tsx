@@ -1,7 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FilePlus } from "@tamagui/lucide-icons";
 import { useQuery } from "@tanstack/react-query";
-import { checkPremiumAccess, usePremium } from "../paywall";
 import dayjs from "dayjs";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
@@ -23,6 +22,7 @@ import {
   YGroup,
   YStack,
 } from "tamagui";
+import { usePremium } from "../paywall";
 
 export function ChatListItem({ name, lastUpdated, onPress }: { name: string }) {
   return (

@@ -1,28 +1,23 @@
+import { ToastProvider, ToastViewport } from "@tamagui/toast";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Asset, useAssets } from "expo-asset";
+import { createContext } from "react";
 import { useColorScheme } from "react-native";
+import mobileAds from "react-native-google-mobile-ads";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import {
   PortalProvider,
   TamaguiProvider,
   type TamaguiProviderProps,
 } from "tamagui";
-import { ToastProvider, ToastViewport } from "@tamagui/toast";
-import { CurrentToast } from "./CurrentToast";
 import { config } from "../tamagui.config";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import {
-  ShareIntentProvider,
-  useShareIntent,
-  useShareIntentContext,
-} from "expo-share-intent";
-import { createContext } from "react";
-import { Asset, useAssets } from "expo-asset";
-import mobileAds from 'react-native-google-mobile-ads';
+import { CurrentToast } from "./CurrentToast";
 
 mobileAds()
   .initialize()
-  .then(adapterStatuses => {
+  .then((adapterStatuses) => {
     // Initialization complete!
-    console.log("initialized ads successfully")
+    console.log("initialized ads successfully");
   });
 
 const queryClient = new QueryClient();
@@ -65,7 +60,9 @@ export function Provider({
                 ]
               }
             >
-              <AssetContext.Provider value={assets}>{children}</AssetContext.Provider>
+              <AssetContext.Provider value={assets}>
+                {children}
+              </AssetContext.Provider>
               <CurrentToast />
               <ToastViewport top="$8" left={0} right={0} />
             </ToastProvider>
