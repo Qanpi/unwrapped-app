@@ -1,36 +1,13 @@
-import { Link, Tabs } from "expo-router";
 import {
-  Adapt,
-  Button,
-  ButtonIcon,
-  getFontSizeToken,
-  H1,
-  H3,
-  H4,
-  H6,
-  Paragraph,
-  Popover,
-  Select,
-  SelectIcon,
-  Sheet,
-  Text,
-  useTheme,
-  View,
-  XStack,
-} from "tamagui";
-import {
+  ChevronDown,
   HelpCircle,
-  Atom,
-  AudioWaveform,
   MessageCircle,
   Settings,
-  ChevronDown,
 } from "@tamagui/lucide-icons";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useState } from "react";
 import { useToastController } from "@tamagui/toast";
-import { tokens } from "@tamagui/config/v3";
+import { Link, Tabs } from "expo-router";
 import { TouchableOpacity } from "react-native";
+import { H4, useTheme, XStack } from "tamagui";
 
 export function HeaderDropdown({ children }) {
   const toast = useToastController();
@@ -62,7 +39,7 @@ export default function TabLayout() {
             </TouchableOpacity>
           </Link>
         ),
-        tabBarActiveTintColor: theme.purple7.val,
+        tabBarActiveTintColor: "$purple7",
       }}
     >
       <Tabs.Screen

@@ -26,18 +26,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Share from "react-native-share";
 
 import { useQueryClient } from "@tanstack/react-query";
+import { useInterstitial } from "app/(tabs)";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import localizedFormat from "dayjs/plugin/localizedFormat";
-import { Modal, TouchableOpacity } from "react-native";
-import { getCardPresets } from "./Presets";
-import { useInterstitial } from "app/(tabs)";
-import {
-  AdEventType,
-  InterstitialAd,
-  TestIds,
-} from "react-native-google-mobile-ads";
+import { TouchableOpacity } from "react-native";
+import { AdEventType } from "react-native-google-mobile-ads";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { usePremium } from "../paywall";
+import { getCardPresets } from "./Presets";
 
 dayjs.extend(localizedFormat);
 dayjs.extend(customParseFormat);
@@ -317,9 +314,11 @@ function WrappedCardList() {
 
 function ChatScreen() {
   return (
-    <YStack flex={1} paddingTop="$5" gap="$3" alignItems="center">
-      <WrappedCardList></WrappedCardList>
-    </YStack>
+    <SafeAreaView style={{ flex: 1 }}>
+      <YStack flex={1} paddingTop="$5" gap="$3" alignItems="center">
+        <WrappedCardList></WrappedCardList>
+      </YStack>
+    </SafeAreaView>
   );
 }
 
