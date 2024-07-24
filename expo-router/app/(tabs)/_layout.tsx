@@ -7,7 +7,7 @@ import {
 import { useToastController } from "@tamagui/toast";
 import { Link, Tabs } from "expo-router";
 import { TouchableOpacity } from "react-native";
-import { H4, useTheme, XStack } from "tamagui";
+import { H4, XStack } from "tamagui";
 
 export function HeaderDropdown({ children }) {
   const toast = useToastController();
@@ -26,8 +26,6 @@ export function HeaderDropdown({ children }) {
 }
 
 export default function TabLayout() {
-  const theme = useTheme();
-
   return (
     <Tabs
       screenOptions={{

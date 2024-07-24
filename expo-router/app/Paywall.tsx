@@ -2,7 +2,7 @@ import { X } from "@tamagui/lucide-icons";
 import { Link, Stack, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { ScrollView, TouchableOpacity } from "react-native";
-import Purchases, { LOG_LEVEL, PurchasesPackage } from "react-native-purchases";
+import Purchases, { PurchasesPackage } from "react-native-purchases";
 import {
   Button,
   Paragraph,
@@ -14,10 +14,10 @@ import {
   YStack,
 } from "tamagui";
 import { ChatListItem } from "./(tabs)";
-import { BaseCard } from "./chat/BaseCard";
 import { useWrappedCards, WrappedContext } from "./chat/[name]";
-import { BigNumber, WH2 } from "./chat/Presets";
+import { BaseCard } from "./chat/BaseCard";
 import { StatRowTemplate } from "./chat/PersonalStats";
+import { BigNumber, WH2 } from "./chat/Presets";
 
 export const checkPremiumAccess = async () => {
   try {
@@ -29,7 +29,7 @@ export const checkPremiumAccess = async () => {
     }
   } catch (e) {
     // Error fetching customer info
-    console.error(e)
+    console.error(e);
   }
 
   return false;
@@ -38,7 +38,7 @@ export const checkPremiumAccess = async () => {
 export const usePremium = () => {
   //undefined means hasn't loaded yet
   const [isPremium, setIsPremium] = useState<boolean | undefined>();
-  const [force, setForce] = useState(0); 
+  const [force, setForce] = useState(0);
 
   useEffect(() => {
     const check = async () => {
@@ -49,13 +49,13 @@ export const usePremium = () => {
     check();
 
     const forceRender = () => {
-      setForce(i => i+ 1);
-    }
+      setForce((i) => i + 1);
+    };
     Purchases.addCustomerInfoUpdateListener(forceRender);
 
     return () => {
       Purchases.removeCustomerInfoUpdateListener(forceRender);
-    }
+    };
   }, [force]);
 
   return isPremium;
