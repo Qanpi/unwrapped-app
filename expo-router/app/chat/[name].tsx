@@ -25,6 +25,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Share from "react-native-share";
 
+import { useToastController } from "@tamagui/toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { useInterstitial } from "app/(tabs)";
 import dayjs from "dayjs";
@@ -74,6 +75,7 @@ function WrappedCardList() {
   const [status, setStatus] = useState("Initializing...");
   const [data, setData] = useState(null);
 
+  const toast = useToastController();
   useEffect(() => {
     if (!local.name) return; //FIXME: 404 page
 
@@ -89,28 +91,32 @@ function WrappedCardList() {
         return setData(chat);
       }
 
-      const SERVER_URL = "http://192.168.10.163:7071";
+      const SERVER_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
 
       setStatus("Analyzing conversations...");
-      const res = await FileSystem.uploadAsync(
-        `${SERVER_URL}/api/analyze`,
-        chat.uri,
-        {
-          fieldName: "chat",
-          httpMethod: "POST",
-          uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+      try {
+        const res = await FileSystem.uploadAsync(
+          `${SERVER_URL}/api/analyze`,
+          chat.uri,
+          {
+            fieldName: "chat",
+            httpMethod: "POST",
+            uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+          }
+        );
+
+        if (res.status !== 200) {
+          throw new Error("Server failed to analyze chat.");
         }
-      );
+        setStatus("Finalizing visualizations...");
+        const parsed = JSON.parse(res.body);
+        setData(parsed);
 
-      if (res.status !== 200) {
-        throw new Error("Server failed to analyze chat.");
+        await AsyncStorage.setItem(chatKey, res.body);
+      } catch (e) {
+        router.navigate("../");
+        toast.show("Failed to analyze chat. Please try again later.");
       }
-
-      setStatus("Finalizing visualizations...");
-      const parsed = JSON.parse(res.body);
-      setData(parsed);
-
-      await AsyncStorage.setItem(chatKey, res.body);
     };
 
     initializeChat().catch(console.error); //FIXME: handle error

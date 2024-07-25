@@ -174,7 +174,9 @@ export const Paywall = () => {
         if (offerings.current !== null && offerings.current.lifetime !== null) {
           setLifetimePackage(offerings.current.lifetime);
         }
-      } catch (e) {}
+      } catch (e) {
+        console.error(e);
+      }
     };
 
     loadOfferings();
