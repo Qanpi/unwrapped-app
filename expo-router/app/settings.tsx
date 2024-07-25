@@ -37,7 +37,7 @@ export default function ModalScreen() {
           <ListItem
             icon={<Trash></Trash>}
             pressTheme
-            title={<Paragraph color="$red6">Delete all data</Paragraph>}
+            title={<Paragraph color="$red8">Delete all data</Paragraph>}
             onPress={handleDeleteAll}
           >
             <ListItem.Subtitle>
