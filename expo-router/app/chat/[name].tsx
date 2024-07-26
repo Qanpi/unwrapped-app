@@ -31,7 +31,7 @@ import { useInterstitial } from "app/(tabs)";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import localizedFormat from "dayjs/plugin/localizedFormat";
-import { TouchableOpacity } from "react-native";
+import { Linking, TouchableOpacity } from "react-native";
 import { AdEventType } from "react-native-google-mobile-ads";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { usePremium } from "../paywall";
@@ -223,7 +223,15 @@ function WrappedCardList() {
                   >
                     Delete chat
                   </Button>
-                  <Button justifyContent="flex-start" icon={Bug}>
+                  <Button
+                    justifyContent="flex-start"
+                    icon={Bug}
+                    onPress={() =>
+                      Linking.openURL(
+                        "mailto:qanpii@gmail.com?subject=BUG: &body=What was the issue?"
+                      )
+                    }
+                  >
                     Report issue
                   </Button>
                 </YStack>
