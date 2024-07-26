@@ -256,12 +256,7 @@ function WrappedCardList() {
           <XStack px={padding} gap={gap}>
             <Theme name="spotify">
               <WrappedContext.Provider value={{ width, height }}>
-                {getCardPresets(
-                  "Chat with " + chatKey,
-                  data,
-                  width,
-                  height
-                ).map((card, i) => (
+                {getCardPresets(chatKey, data, width, height).map((card, i) => (
                   <card.type
                     {...card.props}
                     index={i + 1}
