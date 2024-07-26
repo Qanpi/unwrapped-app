@@ -47,7 +47,7 @@ export const getCardPresets = (
 
   return [
     <BaseCard backgroundColor="$background4" gap="$0" watermark={false}>
-      <WH2 mb="$-1">{chatName}</WH2>
+      <WH2 mb="$-1">{"Chat with\n" + chatName}</WH2>
       <Paragraph color="$gray9">{`${dayjs(timespan.from).format("L")} - ${dayjs(
         timespan.to
       ).format("L")}`}</Paragraph>
@@ -256,15 +256,27 @@ export const getCardPresets = (
         ></WrappedChat>
       </View>
     </BaseCard>,
-    <BaseCard backgroundColor="$background4">
-      <WH2 mb="$-2">{chatName}</WH2>
-      <Paragraph>wrapped.</Paragraph>
-      <Spacer></Spacer>
+    <BaseCard watermark={false} backgroundColor="$background4">
+      <XStack alignItems="center" gap="$1">
+        <Image
+          source={{
+            uri: require("./../../assets/images/logo_96.png"),
+            width: 30,
+            height: 30,
+          }}
+        ></Image>
+        <WH3>Unwrapped</WH3>
+      </XStack>
       <YStack>
-        {/* <Image source={{
-            uri: require("./../../assets/google-play.png"),
-          }}></Image> */}
-        <Paragraph>Get on ios</Paragraph>
+        <Image
+          objectFit="contain"
+          resizeMode="contain"
+          source={{
+            uri: require("./../../assets/images/google-play.png"),
+            width: 180,
+            height: 70,
+          }}
+        ></Image>
       </YStack>
     </BaseCard>,
   ];
