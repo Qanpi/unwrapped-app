@@ -1,0 +1,3 @@
+[submodule "expo-router/react-native-wordcloud"]
+	path = expo-router/react-native-wordcloud
+	url = https://github.com/Qanpi/react-native-wordcloud
