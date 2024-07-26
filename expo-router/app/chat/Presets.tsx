@@ -1,5 +1,3 @@
-import { BaseCard } from "./BaseCard";
-import { PersonalStats } from "./PersonalStats";
 import { WaterMark } from "app/WaterMark";
 import dayjs from "dayjs";
 import {
@@ -10,7 +8,6 @@ import {
   Image,
   Paragraph,
   Spacer,
-  Square,
   Text,
   View,
   XStack,
@@ -18,7 +15,9 @@ import {
   styled,
 } from "tamagui";
 import WordCloud from "../../react-native-wordcloud/src";
+import { BaseCard } from "./BaseCard";
 import { ColoredWordCloud } from "./ColoredWordCloud";
+import { PersonalStats } from "./PersonalStats";
 import { WrappedChat } from "./WrappedChat";
 
 export const WH2 = styled(H2, {
@@ -88,7 +87,12 @@ export const getCardPresets = (
                 {i !== 5 ? name : "Others"}
               </Paragraph>
 
-              <XStack flex={1} alignItems="center" justifyContent="flex-end" gap="$2">
+              <XStack
+                flex={1}
+                alignItems="center"
+                justifyContent="flex-end"
+                gap="$2"
+              >
                 <Paragraph color="$background3" opacity={0.7} fontSize={11}>
                   {i !== 5 ? percentage : remainder}%
                 </Paragraph>
@@ -248,7 +252,7 @@ export const getCardPresets = (
         p="$1"
       >
         <WrappedChat
-          messages={data.last10Messages.slice(0, 5).reverse()}
+          messages={data.last10Messages.slice(5).reverse()}
         ></WrappedChat>
       </View>
     </BaseCard>,

@@ -73,6 +73,7 @@ function WrappedCardList() {
   const chatKey = local.name as string;
 
   const [status, setStatus] = useState("Initializing...");
+  const queryClient = useQueryClient();
   const [data, setData] = useState(null);
 
   const toast = useToastController();
@@ -91,7 +92,9 @@ function WrappedCardList() {
         return setData(chat);
       }
 
-      const SERVER_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
+      // const SERVER_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
+      const SERVER_URL = "http://192.168.10.236:7071";
+      console.log(SERVER_URL, chat.uri);
 
       setStatus("Analyzing conversations...");
       try {
@@ -113,9 +116,13 @@ function WrappedCardList() {
         setData(parsed);
 
         await AsyncStorage.setItem(chatKey, res.body);
+        queryClient.invalidateQueries({
+          queryKey: ["chats"],
+        });
       } catch (e) {
         router.navigate("../");
         toast.show("Failed to analyze chat. Please try again later.");
+        console.error(e);
       }
     };
 
@@ -170,8 +177,6 @@ function WrappedCardList() {
 
   const scrollIndex = useRef(0);
   const { width, height, gap, padding } = useWrappedCards();
-
-  const queryClient = useQueryClient();
 
   const handlePressDeleteChat = async () => {
     await AsyncStorage.removeItem(chatKey);

@@ -186,25 +186,35 @@ export default function ChatsScreen() {
         Import new chat
       </Button>
       <YGroup>
-        {chats?.map(([name, data]) => {
-          const parsed = JSON.parse(data);
-          return (
-            <ChatListItem
-              key={name}
-              name={name}
-              onPress={() => {
-                try {
-                  if (isPremium === false) interstitial.show();
-                } catch (e) {
-                  //TODO: handle add hasn't loaded yet
-                  console.error(e);
-                }
-                router.navigate(`chat/${name}`);
-              }}
-              lastUpdated={dayjs(parsed.lastAnalyzed).format("L")}
-            ></ChatListItem>
-          );
-        })}
+        {chats?.length &&
+          chats
+            .map(([name, data]) => {
+              const parsed = JSON.parse(data);
+              return [name, parsed];
+            })
+            .sort((a, b) =>
+              dayjs(a[1].lastAnalyzed).isAfter(dayjs(b[1].lastAnalyzed))
+                ? -1
+                : 1
+            )
+            .map(([name, parsed]) => {
+              return (
+                <ChatListItem
+                  key={name}
+                  name={name}
+                  onPress={() => {
+                    try {
+                      if (isPremium === false) interstitial.show();
+                    } catch (e) {
+                      //TODO: handle add hasn't loaded yet
+                      console.error(e);
+                    }
+                    router.navigate(`chat/${name}`);
+                  }}
+                  lastUpdated={dayjs(parsed.lastAnalyzed).format("L")}
+                ></ChatListItem>
+              );
+            })}
       </YGroup>
     </YStack>
   );
