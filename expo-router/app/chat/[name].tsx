@@ -92,9 +92,7 @@ function WrappedCardList() {
         return setData(chat);
       }
 
-      // const SERVER_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
-      const SERVER_URL = "http://192.168.10.236:7071";
-      console.log(SERVER_URL, chat.uri);
+      const SERVER_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
 
       setStatus("Analyzing conversations...");
       try {

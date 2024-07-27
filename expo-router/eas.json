@@ -7,15 +7,26 @@
       "developmentClient": true,
       "distribution": "internal",
       "env": {
-        "EXPO_PUBLIC_RC_GOOGLE_API_KEY": "goog_bjXZXCgTHPrtgSCKCUmAWJWlZdx"
+        "EXPO_PUBLIC_RC_GOOGLE_API_KEY": "goog_bjXZXCgTHPrtgSCKCUmAWJWlZdx",
+        "EXPO_PUBLIC_BACKEND_URL": "http://192.168.10.236:7071"
       }
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_RC_GOOGLE_API_KEY": "goog_bjXZXCgTHPrtgSCKCUmAWJWlZdx",
+        "EXPO_PUBLIC_BACKEND_URL": "http://unwrapped.azurewebsites.net"
+      }
     },
-    "production": {}
+    "production": {
+      "EXPO_PUBLIC_RC_GOOGLE_API_KEY": "goog_bjXZXCgTHPrtgSCKCUmAWJWlZdx",
+      "EXPO_PUBLIC_BACKEND_URL": "http://unwrapped.azurewebsites.net"
+    }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "EXPO_PUBLIC_RC_GOOGLE_API_KEY": "goog_bjXZXCgTHPrtgSCKCUmAWJWlZdx",
+      "EXPO_PUBLIC_BACKEND_URL": "http://unwrapped.azurewebsites.net"
+    }
   }
 }
