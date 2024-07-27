@@ -183,7 +183,7 @@ export default function ChatsScreen() {
         color="$purple8"
         onPress={handlePressImport}
       >
-        Import new chat
+        <Button.Text>Import new chat</Button.Text>
       </Button>
       <YGroup>
         {chats?.length &&
