@@ -26,11 +26,6 @@
     }
   },
   "submit": {
-    "production": {
-      "env": {
-        "EXPO_PUBLIC_RC_GOOGLE_API_KEY": "goog_bjXZXCgTHPrtgSCKCUmAWJWlZdx",
-        "EXPO_PUBLIC_BACKEND_URL": "http://unwrapped.azurewebsites.net"
-      }
-    }
+    "production": {}
   }
 }
