@@ -6,6 +6,7 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
+      "channel": "development",
       "env": {
         "EXPO_PUBLIC_RC_GOOGLE_API_KEY": "goog_bjXZXCgTHPrtgSCKCUmAWJWlZdx",
         "EXPO_PUBLIC_BACKEND_URL": "http://192.168.10.236:7071"
@@ -13,12 +14,14 @@
     },
     "preview": {
       "distribution": "internal",
+      "channel": "preview",
       "env": {
         "EXPO_PUBLIC_RC_GOOGLE_API_KEY": "goog_bjXZXCgTHPrtgSCKCUmAWJWlZdx",
         "EXPO_PUBLIC_BACKEND_URL": "http://unwrapped.azurewebsites.net"
       }
     },
     "production": {
+      "channel": "production",
       "env": {
         "EXPO_PUBLIC_RC_GOOGLE_API_KEY": "goog_bjXZXCgTHPrtgSCKCUmAWJWlZdx",
         "EXPO_PUBLIC_BACKEND_URL": "http://unwrapped.azurewebsites.net"
