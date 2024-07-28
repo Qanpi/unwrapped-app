@@ -1,11 +1,12 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FilePlus } from "@tamagui/lucide-icons";
+import { useToastController } from "@tamagui/toast";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
 import { Link, useRouter } from "expo-router";
-import { ShareIntentFile, useShareIntentContext } from "expo-share-intent";
+import { useShareIntentContext } from "expo-share-intent";
 import { useEffect } from "react";
 import {
   AdEventType,
@@ -88,43 +89,70 @@ export default function ChatsScreen() {
     }
   }, [hasShareIntent]);
 
-  const openChat = async (file: ShareIntentFile) => {
-    let uri, filename;
+  const toast = useToastController();
+  const openChat = async (file: {
+    fileName: string;
+    mimeType: string;
+    path: string;
+  }) => {
+    try {
+      let uri: string, filename: string;
 
-    if (file.mimeType === "text/plain") {
-      uri = file.path;
-      filename = file.fileName;
-    } else if (file?.mimeType === "application/zip") {
-      const zipPath =
-        FileSystem.cacheDirectory + file.fileName.replace(/.zip/, "");
+      if (file.mimeType === "text/plain") {
+        uri = file.path;
+        filename = file.fileName;
+      } else if (file?.mimeType === "application/zip") {
+        const zipPath =
+          FileSystem.cacheDirectory + file.fileName.replace(/.zip/, "");
 
-      await unzip(file.path, zipPath, "UTF-8");
-      const entries = await FileSystem.readDirectoryAsync(zipPath);
+        await unzip(file.path, zipPath, "UTF-8");
+        const entries = await FileSystem.readDirectoryAsync(zipPath);
 
-      const chatLog = entries.find((e) => e.endsWith(".txt"));
-      uri = zipPath + "/" + chatLog;
-      filename = chatLog;
+        const chatLog = entries.find((e) => e.endsWith(".txt"));
+        if (!chatLog) {
+          return toast.show("Invalid zip file.");
+        }
+
+        uri = zipPath + "/" + chatLog;
+        filename = chatLog;
+      } else {
+        return toast.show(
+          "Invalid file type, only .zip and .txt files are supported."
+        );
+      }
+
+      let key = filename.startsWith("WhatsApp Chat with ")
+        ? filename.replace(/WhatsApp Chat with /, "")
+        : filename;
+
+      key.replace(/.txt/, "");
+
+      if (isPremium === false) interstitial.show();
+
+      await AsyncStorage.setItem(key, JSON.stringify({ uri }));
+      router.navigate(`chat/${key}`);
+    } catch (e) {
+      toast.show(
+        "Something went wrong opening the file. Please try again or contact support."
+      );
     }
-
-    const key = filename.replace(/WhatsApp Chat with /, "").replace(/.txt/, "");
-
-    await AsyncStorage.setItem(key, JSON.stringify({ uri }));
-    router.navigate(`chat/${key}`);
   };
 
   const handlePressImport = async () => {
     const res = await DocumentPicker.getDocumentAsync({
-      type: "*/*", //TODO: .zip support?
+      type: ["text/plain", "application/zip"], //TODO: .zip support?
       copyToCacheDirectory: true,
     });
 
     if (res.canceled) {
-      console.log("canceled"); //FIXME:
       return;
     }
 
-    const { uri, name } = res.assets[0];
-    openChat(name, uri);
+    const { name, uri, mimeType } = res.assets[0];
+
+    if (!mimeType) return toast.show("Invalid file type.");
+
+    openChat({ fileName: name, path: uri, mimeType: mimeType });
   };
 
   const { data: chats } = useQuery({
@@ -160,6 +188,10 @@ export default function ChatsScreen() {
   return (
     <YStack>
       <PremiumBanner></PremiumBanner>
+      <Link href="/paywall">Go to paywall</Link>
+      <Button onPress={() => router.navigate("/paywall")}>
+        Router to paywall
+      </Button>
       <Button
         justifyContent="flex-start"
         variant="outlined"
