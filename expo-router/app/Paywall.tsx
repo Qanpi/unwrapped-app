@@ -52,9 +52,11 @@ export const usePremium = () => {
       setForce((i) => i + 1);
     };
     Purchases.addCustomerInfoUpdateListener(forceRender);
+    Purchases.addCustomerInfoUpdateListener(check);
 
     return () => {
       Purchases.removeCustomerInfoUpdateListener(forceRender);
+      Purchases.removeCustomerInfoUpdateListener(check);
     };
   }, [force]);
 
