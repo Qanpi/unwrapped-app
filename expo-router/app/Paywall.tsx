@@ -93,7 +93,10 @@ export const Paywall = () => {
       <WH2>Unlock lifetime premium</WH2>
       {/* FIXME: adjust by locale */}
       <Paragraph>
-        For a one-time payment of {lifetimePackage?.product.priceString}
+        For a one-time payment of{" "}
+        <Paragraph color="$background3">
+          {lifetimePackage?.product.priceString}
+        </Paragraph>
       </Paragraph>
       <Spacer size="$2"></Spacer>
       <Button
