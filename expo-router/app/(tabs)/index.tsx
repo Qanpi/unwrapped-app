@@ -47,7 +47,7 @@ export function DefaultYStack({ children }) {
 }
 const adUnitId = __DEV__
   ? TestIds.INTERSTITIAL
-  : "ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyyyy";
+  : "ca-app-pub-7645417253321075~9323994393";
 
 const interstitial = InterstitialAd.createForAdRequest(adUnitId, {});
 
