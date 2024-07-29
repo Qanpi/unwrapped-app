@@ -7,7 +7,13 @@ import {
 } from "@tamagui/lucide-icons";
 import * as FileSystem from "expo-file-system";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { createContext, useEffect, useRef, useState } from "react";
+import {
+  createContext,
+  ReactInstance,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { captureRef } from "react-native-view-shot";
 import {
   Button,
@@ -124,10 +130,10 @@ function WrappedCardList() {
       }
     };
 
-    initializeChat().catch(console.error); //FIXME: handle error
+    initializeChat();
   }, [local.name]);
 
-  const cardRefs = useRef([]);
+  const cardRefs = useRef<ReactInstance[]>([]);
   const assignCardRef = (el, index) => {
     if (el && !cardRefs.current[index]) {
       cardRefs.current[index] = el;
@@ -136,14 +142,10 @@ function WrappedCardList() {
 
   const shareCapturedFiles = async (uris: string[]) => {
     //FIXME: handleError gracefully
-    try {
-      const response = await Share.open({
-        type: "image/*",
-        urls: uris,
-      });
-    } catch (e) {
-      console.error(e);
-    }
+    const response = await Share.open({
+      type: "image/*",
+      urls: uris,
+    });
   };
 
   const isPremium = usePremium();
@@ -152,20 +154,15 @@ function WrappedCardList() {
   const takeScreenShot = async (single: boolean = false) => {
     const urls: string[] = [];
 
-    try {
-      for (const card of cardRefs.current) {
-        const uri = await captureRef(card, {
-          format: "jpg",
-          quality: 0.8,
-        });
+    for (const card of cardRefs.current) {
+      const uri = await captureRef(card, {
+        format: "jpg",
+        quality: 0.8,
+      });
 
-        urls.push("file://" + uri);
+      urls.push("file://" + uri);
 
-        if (single) break;
-      }
-    } catch (e) {
-      //FIXME: handle gracefully
-      console.error(e);
+      if (single) break;
     }
 
     return urls;
@@ -286,8 +283,13 @@ function WrappedCardList() {
           flexDirection="column"
           chromeless
           onPress={async () => {
-            const urls = await takeScreenShot(true);
-            shareCapturedFiles(urls);
+            try {
+              const urls = await takeScreenShot(true);
+              shareCapturedFiles(urls);
+            } catch (e) {
+              console.error(e);
+              toast.show("Failed to share chat. Please try again later.");
+            }
           }}
         >
           <Share2></Share2>
@@ -300,19 +302,24 @@ function WrappedCardList() {
           chromeless
           flexDirection="column"
           onPress={async () => {
-            const urls = takeScreenShot();
+            try {
+              const urls = takeScreenShot();
 
-            if (isPremium === false) {
-              interstitial.show();
-              const unsubscribe = interstitial.addAdEventListener(
-                AdEventType.CLOSED,
-                async () => {
-                  await shareCapturedFiles(await urls);
-                  unsubscribe();
-                }
-              );
-            } else {
-              await shareCapturedFiles(await urls);
+              if (isPremium === false) {
+                interstitial.show();
+                const unsubscribe = interstitial.addAdEventListener(
+                  AdEventType.CLOSED,
+                  async () => {
+                    await shareCapturedFiles(await urls);
+                    unsubscribe();
+                  }
+                );
+              } else {
+                await shareCapturedFiles(await urls);
+              }
+            } catch (e) {
+              console.error(e);
+              toast.show("Failed to share chat. Please try again later.");
             }
           }}
         >

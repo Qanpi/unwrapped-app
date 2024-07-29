@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useShareIntentContext } from "expo-share-intent";
 import { useEffect } from "react";
 import {
@@ -25,7 +25,15 @@ import {
 } from "tamagui";
 import { usePremium } from "../paywall";
 
-export function ChatListItem({ name, lastUpdated, onPress }: { name: string }) {
+export function ChatListItem({
+  name,
+  lastUpdated,
+  onPress,
+}: {
+  name: string;
+  lastUpdated: string;
+  onPress?: () => void;
+}) {
   return (
     <YGroup.Item>
       <ListItem
@@ -127,11 +135,16 @@ export default function ChatsScreen() {
 
       key.replace(/.txt/, "");
 
-      if (isPremium === false) interstitial.show();
+      try {
+        if (isPremium === false) interstitial.show();
+      } catch (e) {
+        console.log("interstitial not loaded yet");
+      }
 
       await AsyncStorage.setItem(key, JSON.stringify({ uri }));
       router.navigate(`chat/${key}`);
     } catch (e) {
+      console.error(e);
       toast.show(
         "Something went wrong opening the file. Please try again or contact support."
       );
@@ -168,8 +181,8 @@ export default function ChatsScreen() {
     const isPremium = usePremium();
 
     return isPremium === false ? (
-      <Link href="/paywall" asChild>
-        <View minHeight={200}>
+      
+        <View minHeight={200} onPress={() => router.navigate("/paywall")}>
           <Image
             flex={1}
             source={{
@@ -179,7 +192,7 @@ export default function ChatsScreen() {
             resizeMode="contain"
           ></Image>
         </View>
-      </Link>
+      
     ) : (
       <></>
     );
@@ -188,10 +201,6 @@ export default function ChatsScreen() {
   return (
     <YStack>
       <PremiumBanner></PremiumBanner>
-      <Link href="/paywall">Go to paywall</Link>
-      <Button onPress={() => router.navigate("/paywall")}>
-        Router to paywall
-      </Button>
       <Button
         justifyContent="flex-start"
         variant="outlined"
@@ -223,8 +232,7 @@ export default function ChatsScreen() {
                       try {
                         if (isPremium === false) interstitial.show();
                       } catch (e) {
-                        //TODO: handle add hasn't loaded yet
-                        console.error(e);
+                        console.log("ad not loaded yet");
                       }
                       router.navigate(`chat/${name}`);
                     }}
