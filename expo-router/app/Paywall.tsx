@@ -1,4 +1,5 @@
 import { X } from "@tamagui/lucide-icons";
+import { useToastController } from "@tamagui/toast";
 import { Link, Stack, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { ScrollView, TouchableOpacity } from "react-native";
@@ -71,20 +72,23 @@ export const Paywall = () => {
 
   const [lifetimePackage, setLifetimePackage] = useState<PurchasesPackage>();
 
+  const toast = useToastController();
   const handlePurchase = async () => {
     try {
       const { customerInfo } = await Purchases.purchasePackage(
         lifetimePackage!
       );
-
-      if (await checkPremiumAccess()) {
-        router.navigate("../");
-      }
     } catch (e) {
       //FIXME: error taost
       if (!e.userCancelled) {
-        // showError(e);
+        toast.show(
+          "Something went wrong trying to purchase premium, contact support."
+        );
       }
+    }
+
+    if (await checkPremiumAccess()) {
+      router.navigate("../");
     }
   };
 
@@ -180,6 +184,7 @@ export const Paywall = () => {
           setLifetimePackage(offerings.current.lifetime);
         }
       } catch (e) {
+        toast.show("Could not load offers, try again later.");
         console.error(e);
       }
     };
