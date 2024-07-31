@@ -82,7 +82,7 @@ export const Paywall = () => {
       //FIXME: error taost
       if (!e.userCancelled) {
         toast.show(
-          "Something went wrong trying to purchase premium, contact support."
+          "Something went wrong trying to purchase premium, please contact support."
         );
       }
     }

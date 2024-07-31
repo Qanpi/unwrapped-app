@@ -17,14 +17,14 @@
       "channel": "preview",
       "env": {
         "EXPO_PUBLIC_RC_GOOGLE_API_KEY": "goog_bjXZXCgTHPrtgSCKCUmAWJWlZdx",
-        "EXPO_PUBLIC_BACKEND_URL": "http://unwrapped.azurewebsites.net"
+        "EXPO_PUBLIC_BACKEND_URL": "https://unwrapped.azurewebsites.net"
       }
     },
     "production": {
       "channel": "production",
       "env": {
         "EXPO_PUBLIC_RC_GOOGLE_API_KEY": "goog_bjXZXCgTHPrtgSCKCUmAWJWlZdx",
-        "EXPO_PUBLIC_BACKEND_URL": "http://unwrapped.azurewebsites.net"
+        "EXPO_PUBLIC_BACKEND_URL": "https://unwrapped.azurewebsites.net"
       }
     }
   },
