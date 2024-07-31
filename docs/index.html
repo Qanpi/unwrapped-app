@@ -8,21 +8,22 @@
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&amp;display=swap">
     <link rel="stylesheet" href="assets/css/bs-theme-overrides.css">
+    <link rel="stylesheet" href="assets/css/accordion-faq-list.css">
     <link rel="stylesheet" href="assets/css/untitled.css">
 </head>
 
-<body>
-    <nav class="navbar navbar-expand-md sticky-top py-3 navbar-dark" id="mainNav">
+<body style="background: #09042a;">
+    <nav class="navbar navbar-expand-md sticky-top py-3 navbar-dark" id="mainNav" style="background: var(--bs-dark);">
         <div class="container"><a class="navbar-brand d-flex align-items-center" href="/"><img src="assets/img/unwrapped.png" width="51" height="51"><span>Unwrapped</span></a></div>
     </nav>
     <header class="bg-dark">
         <div class="d-flex flex-column align-items-center" style="position: absolute;/*margin-top: 150px;*/width: 100%;">
-            <h2 class="fw-bold" style="font-size: 17vw;text-align: center;/*top: 10px;*/color: var(--bs-secondary);font-weight: 900 !important;margin-top: min(15vw, 120px);text-shadow: 0px 0px 10px var(--bs-secondary);">unwrapped</h2>
+            <h2 class="fw-bold" style="font-size: 17vw;text-align: center;/*top: 10px;*/color: #6a17ab;font-weight: 900 !important;margin-top: min(15vw, 120px);text-shadow: 0px 0px 15px var(--bs-secondary);">unwrapped</h2>
         </div>
-        <div class="container py-5">
-            <div class="row g-0 py-5">
-                <div class="col-md-6 text-md-start mb-4" style="margin-top: 23vw;padding-left: 10%;">
-                    <p class="my-3" style="width: 300px;">Unlock insights into your WhatsApp conversations.</p><a href="google.com"><img src="assets/img/google-play.png" width="212" height="62"></a>
+        <div class="container py-5" style="padding-top: 0px !important;padding-bottom: 0px !important;">
+            <div class="row g-0 py-5" style="padding-bottom: 61px;">
+                <div class="col-md-6 text-md-start mb-4" style="margin-top: 25vw;padding-left: 10%;">
+                    <p class="my-3" style="width: 300px;color: var(--bs-primary-bg-subtle);">Unlock insights into your WhatsApp conversations.</p><a href="google.com"><img src="assets/img/google-play.png" width="212" height="62"></a>
                 </div>
                 <div class="col-md-6 mb-4">
                     <div class="p-5 mx-lg-5" style="background: url(&quot;assets/img/blob.svg&quot;) center / contain no-repeat;"><img class="rounded img-fluid shadow w-100 fit-cover" style="transform: rotate(3deg);" height="386" width="214" src="assets/img/main.png"></div>
@@ -30,21 +31,17 @@
             </div>
         </div>
     </header>
-    <section class="py-5">
-        <div class="container text-center py-5" style="padding-top: 0 !important;padding-bottom: 0 !important;">
-            <p class="mb-4" style="font-size: 1.6rem;">Used by over&nbsp;<span class="text-success"><strong>2</strong></span>&nbsp;(and counting)&nbsp;users across the globe.</p>
-        </div>
-    </section>
-    <section>
-        <div class="container bg-dark py-5">
+    <section style="background: #07031e;">
+        <div class="container bg-dark py-5" style="background-color: transparent !important;">
             <div class="row">
                 <div class="col-md-8 col-xl-6 text-center mx-auto">
-                    <p class="fw-bold text-success mb-2">Features</p>
-                    <h3 class="fw-bold">all this and more</h3>
+                    <h3 class="fw-bold" style="color: var(--bs-success);">Features</h3>
+                    <p class="fw-bold text-success mb-2" style="color: var(--bs-primary-bg-subtle) !important;">all kinds of analysis</p>
                 </div>
             </div>
             <div class="py-5 p-lg-5" style="overflow: hidden;">
                 <div class="hstack gap-3" style="overflow: scroll;">
+                    <div class="card shadow-sm" style="min-height: 420px;background: url(&quot;assets/img/1.png&quot;) no-repeat;background-size: cover;min-width: 200px;"></div>
                     <div class="card shadow-sm" style="min-height: 420px;background: url(&quot;assets/img/6.5-inch-1.png&quot;) no-repeat;background-size: cover;min-width: 200px;"></div>
                     <div class="card shadow-sm" style="min-height: 420px;background: url(&quot;assets/img/6.5-inch-2.png&quot;) no-repeat;background-size: cover;min-width: 200px;"></div>
                     <div class="card shadow-sm" style="min-height: 420px;background: url(&quot;assets/img/6.5-inch.png&quot;) no-repeat;background-size: cover;min-width: 200px;"></div>
@@ -52,22 +49,38 @@
             </div>
         </div>
     </section>
-    <section class="py-5">
-        <div class="container py-5">
-            <div class="row mb-5">
-                <div class="col-md-8 col-xl-6 text-center mx-auto">
-                    <p class="fw-bold text-success mb-2">Reviews</p>
-                    <h2 class="fw-bold">unwrapped wrapped up</h2>
-                </div>
+    <section id="faq" class="py-5 bg-light" style="background: linear-gradient(131deg, #09042a 0%, var(--bs-secondary-text-emphasis)), rgb(33,7,54);">
+        <div class="row">
+            <div class="col-md-8 col-xl-6 text-center mx-auto">
+                <h3 class="fw-bold" style="color: var(--bs-success);">FAQ</h3>
             </div>
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 d-sm-flex justify-content-sm-center">
-                <div class="col mb-4">
-                    <div class="d-flex flex-column align-items-center align-items-sm-start">
-                        <p class="bg-dark border rounded border-dark p-4">Your review could be here.</p>
-                        <div class="d-flex"><img class="rounded-circle flex-shrink-0 me-3 fit-cover" width="50" height="50" src="assets/img/team/avatar2.jpg">
-                            <div>
-                                <p class="fw-bold text-primary mb-0">Your name</p>
-                                <p class="text-muted mb-0">Title</p>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 offset-md-3">
+                    <div id="faqlist" class="accordion accordion-flush">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="btn accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#content-accordion-1" style="height: 80px;">Is Unwrapped free?</button></h2>
+                            <div id="content-accordion-1" class="accordion-collapse collapse" data-bs-parent="#faqlist">
+                                <p class="accordion-body"> Yes, most of the analysis functionality is free, with the exception of personalized statistics that require a premium tier.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="btn accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#content-accordion-2">How is my data handled?</button></h2>
+                            <div id="content-accordion-2" class="accordion-collapse collapse" data-bs-parent="#faqlist">
+                                <p class="accordion-body"> Your data is used only in the moment of the analysis, and immediately deleted after. For personalized statistics, a small subset of data is shared with the OpenAI model.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="btn accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#content-accordion-3">Does it only work for WhatsApp?</button></h2>
+                            <div id="content-accordion-3" class="accordion-collapse collapse" data-bs-parent="#faqlist">
+                                <p class="accordion-body"> As of now, Unwrapped can only analyze WhatsApp conversations. However, the plan is to expand to other services like YouTube and Instagram.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="btn accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#content-accordion-4">How can I request to delete my data?</button></h2>
+                            <div id="content-accordion-4" class="accordion-collapse collapse" data-bs-parent="#faqlist">
+                                <p class="accordion-body"> Your conversation data is only used for the analysis in the moment, and is not stored afterwards. You may request to delete all analyzed statistics from the application settings.</p>
                             </div>
                         </div>
                     </div>
@@ -75,14 +88,14 @@
             </div>
         </div>
     </section>
-    <footer class="bg-dark">
+    <footer class="bg-dark" style="background: var(--bs-secondary);">
         <div class="container py-4 py-lg-5">
             <div class="row justify-content-center">
                 <div class="col-sm-4 col-md-3 text-center text-lg-start d-flex flex-column">
                     <h3 class="fs-6 fw-bold">Learn more</h3>
                     <ul class="list-unstyled">
-                        <li><a href="#">GitHub</a></li>
-                        <li><a href="#">YouTube</a></li>
+                        <li><a href="https://github.com/Qanpi/unwrapped-app">GitHub</a></li>
+                        <li><a href="https://www.youtube.com/@qanpi">YouTube</a></li>
                         <li><a href="#">Product Hunt</a></li>
                     </ul>
                 </div>

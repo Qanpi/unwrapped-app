@@ -1,0 +1,37 @@
+.accordion collapse {
+  border: 0;
+}
+
+.accordion-button:focus {
+  box-shadow: none;
+  border: none;
+}
+
+.accordion-button:not(.collapsed) {
+  background: none;
+  color: #ff9800;
+  box-shadow: none;
+  border-bottom: none;
+}
+
+.accordion-button::after {
+  width: auto;
+  height: auto;
+  content: "+";
+  font-size: 30px;
+  background-image: none;
+  font-weight: 100;
+  color: var(--bs-success);
+  transform: translateY(-4px);
+}
+
+.accordion-button:not(.collapsed)::after {
+  width: auto;
+  height: auto;
+  background-image: none;
+  content: "-";
+  font-size: 48px;
+  transform: translate(-5px, -4px);
+  transform: rotate(0deg);
+}
+
