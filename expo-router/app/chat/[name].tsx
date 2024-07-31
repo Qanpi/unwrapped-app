@@ -145,6 +145,7 @@ function WrappedCardList() {
     const response = await Share.open({
       type: "image/*",
       urls: uris,
+      failOnCancel: false,
     });
   };
 
