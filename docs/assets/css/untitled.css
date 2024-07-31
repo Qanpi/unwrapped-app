@@ -1,3 +1,10 @@
 div {
 }
 
+.accordion-button:not(.collapsed) {
+  background: none;
+  color: var(--bs-success);
+  box-shadow: none;
+  border-bottom: none;
+}
+
