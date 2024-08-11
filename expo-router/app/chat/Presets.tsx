@@ -72,11 +72,12 @@ export const getCardPresets = (
         <H4 mb="$4">Messages per person</H4>
         {messagesPerPerson.slice(0, 6).map((p, i) => {
           const [name, count, factor] = p;
-          const percentage = (factor * 100).toFixed(0);
+          const percentage = factor * 100;
 
           cumPercentage += factor * 100;
-          const remainder = (100 - cumPercentage).toFixed(0);
+          const remainder = 100 - cumPercentage;
 
+          const width = (i === 5 ? remainder : percentage) * 1.5;
           return (
             <XStack
               key={name}
@@ -94,13 +95,13 @@ export const getCardPresets = (
                 gap="$2"
               >
                 <Paragraph color="$background3" opacity={0.7} fontSize={11}>
-                  {i !== 5 ? percentage : remainder}%
+                  {(i !== 5 ? percentage : remainder).toFixed(0)}%
                 </Paragraph>
                 <View
                   backgroundColor="$background3"
                   borderRadius="$1"
                   height="$1"
-                  width={(i === 5 ? remainder : percentage) + "%"}
+                  width={width}
                 ></View>
               </XStack>
             </XStack>
