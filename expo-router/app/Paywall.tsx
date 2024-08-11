@@ -88,7 +88,7 @@ export const Paywall = () => {
     }
 
     if (await checkPremiumAccess()) {
-      router.navigate("../");
+      router.back();
     }
   };
 

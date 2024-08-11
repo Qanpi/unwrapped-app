@@ -142,7 +142,7 @@ export default function ChatsScreen() {
       }
 
       await AsyncStorage.setItem(key, JSON.stringify({ uri }));
-      router.navigate(`chat/${key}`);
+      router.push(`chat/${key}`);
     } catch (e) {
       console.error(e);
       toast.show(
@@ -181,18 +181,16 @@ export default function ChatsScreen() {
     const isPremium = usePremium();
 
     return isPremium === false ? (
-      
-        <View minHeight={200} onPress={() => router.navigate("/paywall")}>
-          <Image
-            flex={1}
-            source={{
-              uri: require("../../assets/images/premium-banner.png"),
-            }}
-            objectFit="contain"
-            resizeMode="contain"
-          ></Image>
-        </View>
-      
+      <View minHeight={200} onPress={() => router.push("/paywall")}>
+        <Image
+          flex={1}
+          source={{
+            uri: require("../../assets/images/premium-banner.png"),
+          }}
+          objectFit="contain"
+          resizeMode="contain"
+        ></Image>
+      </View>
     ) : (
       <></>
     );
@@ -234,7 +232,7 @@ export default function ChatsScreen() {
                       } catch (e) {
                         console.log("ad not loaded yet");
                       }
-                      router.navigate(`chat/${name}`);
+                      router.push(`chat/${name}`);
                     }}
                     lastUpdated={dayjs(parsed.lastAnalyzed).format("L")}
                   ></ChatListItem>

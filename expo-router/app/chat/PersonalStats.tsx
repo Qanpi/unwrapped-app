@@ -1,19 +1,19 @@
 import { HelpCircle } from "@tamagui/lucide-icons";
-import { usePremium } from "../paywall";
 import { useRouter } from "expo-router";
 import { TouchableOpacity } from "react-native";
 import {
+  Adapt,
   Button,
-  View,
-  XStack,
+  H1,
+  H6,
   Paragraph,
   Popover,
-  Adapt,
-  YStack,
-  H6,
-  H1,
   Spacer,
+  View,
+  XStack,
+  YStack,
 } from "tamagui";
+import { usePremium } from "../paywall";
 
 function formatTime(seconds) {
   // Hours, minutes and seconds
@@ -65,10 +65,7 @@ const StatRow = ({ title, stat, blur }) => {
       {!blur ? (
         statParagraph
       ) : (
-        <TouchableOpacity
-          hitSlop={5}
-          onPress={() => router.navigate("/paywall")}
-        >
+        <TouchableOpacity hitSlop={5} onPress={() => router.push("/paywall")}>
           {statParagraph}
         </TouchableOpacity>
       )}
