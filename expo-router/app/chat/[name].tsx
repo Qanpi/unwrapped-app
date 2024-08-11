@@ -124,7 +124,7 @@ function WrappedCardList() {
           queryKey: ["chats"],
         });
       } catch (e) {
-        router.navigate("../");
+        router.back();
         toast.show("Failed to analyze chat. Please try again later.");
         console.error(e);
       }
