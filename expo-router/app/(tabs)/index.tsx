@@ -209,7 +209,7 @@ export default function ChatsScreen() {
       >
         <Button.Text>Import new chat</Button.Text>
       </Button>
-      <YGroup>
+      <YGroup scrollable>
         {chats?.length
           ? chats
               .map(([name, data]) => {
