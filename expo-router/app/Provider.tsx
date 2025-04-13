@@ -17,7 +17,7 @@ mobileAds()
   .initialize()
   .then((adapterStatuses) => {
     // Initialization complete!
-    console.log("initialized ads successfully");
+    console.debug("initialized ads successfully");
   });
 
 const queryClient = new QueryClient();

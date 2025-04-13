@@ -33,7 +33,7 @@ import Share from "react-native-share";
 
 import { useToastController } from "@tamagui/toast";
 import { useQueryClient } from "@tanstack/react-query";
-import { useInterstitial } from "app/(tabs)";
+import { hasAnalyzedBeforeKey, useInterstitial } from "app/(tabs)";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import localizedFormat from "dayjs/plugin/localizedFormat";
@@ -99,6 +99,7 @@ function WrappedCardList() {
       }
 
       const SERVER_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
+      console.debug("SERVER_URL: ", SERVER_URL);
 
       setStatus("Analyzing conversations...");
       try {
@@ -123,6 +124,8 @@ function WrappedCardList() {
         queryClient.invalidateQueries({
           queryKey: ["chats"],
         });
+
+        await AsyncStorage.setItem(hasAnalyzedBeforeKey, "true");
       } catch (e) {
         router.back();
         toast.show("Failed to analyze chat. Please try again later.");

@@ -25,6 +25,8 @@ import {
 } from "tamagui";
 import { usePremium } from "../paywall";
 
+export const hasAnalyzedBeforeKey = "@hasAnalyzedBefore";
+
 export function ChatListItem({
   name,
   lastUpdated,
@@ -136,7 +138,13 @@ export default function ChatsScreen() {
       key.replace(/.txt/, "");
 
       try {
-        if (isPremium === false) interstitial.show();
+        const hasAnalyzedBefore = await AsyncStorage.getItem(
+          hasAnalyzedBeforeKey
+        );
+
+        if (isPremium === false && hasAnalyzedBefore != null) {
+          interstitial.show();
+        }
       } catch (e) {
         console.log("interstitial not loaded yet");
       }
@@ -172,7 +180,9 @@ export default function ChatsScreen() {
     queryKey: ["chats"],
     queryFn: async () => {
       const keys = await AsyncStorage.getAllKeys();
-      const res = await AsyncStorage.multiGet(keys);
+      const res = await AsyncStorage.multiGet(
+        keys.filter((k) => !k.startsWith("@"))
+      );
       return res;
     },
   });
@@ -227,11 +237,11 @@ export default function ChatsScreen() {
                     key={name}
                     name={name}
                     onPress={() => {
-                      try {
-                        if (isPremium === false) interstitial.show();
-                      } catch (e) {
-                        console.log("ad not loaded yet");
-                      }
+                      // try {
+                      //   if (isPremium === false) interstitial.show();
+                      // } catch (e) {
+                      //   console.log("ad not loaded yet");
+                      // }
                       router.push(`chat/${name}`);
                     }}
                     lastUpdated={dayjs(parsed.lastAnalyzed).format("L")}

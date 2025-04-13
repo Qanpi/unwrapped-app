@@ -9,7 +9,7 @@
       "channel": "development",
       "env": {
         "EXPO_PUBLIC_RC_GOOGLE_API_KEY": "goog_bjXZXCgTHPrtgSCKCUmAWJWlZdx",
-        "EXPO_PUBLIC_BACKEND_URL": "http://192.168.10.236:7071"
+        "EXPO_PUBLIC_BACKEND_URL": "http://10.0.2.2:7071"
       }
     },
     "preview": {
