@@ -1,6 +1,6 @@
 # unwrapped
 
-Spotify Wrapped, but for WhatsApp conversations. Fully shipped mobile app to google play store.
+Spotify Wrapped, but for WhatsApp conversations. Fully shipped mobile app to [google play store](https://play.google.com/store/apps/details?id=com.qanpi.unwrapped).
 
 ![Feature](https://github.com/user-attachments/assets/66bdc9be-f44f-4aa0-be32-5300dec59baa)
 
